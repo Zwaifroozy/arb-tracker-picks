@@ -1,0 +1,955 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Arb Tracker Picks</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:         #080809;
+  --bg2:        #101012;
+  --bg3:        #18181b;
+  --bg4:        #202024;
+  --bg5:        #28282d;
+  --border:     rgba(255,255,255,0.06);
+  --border2:    rgba(255,255,255,0.12);
+  --text:       #eeeef0;
+  --text2:      #888894;
+  --text3:      #44444e;
+  --accent:     #00e5ff;
+  --accent-dim: rgba(0,229,255,0.1);
+  --accent-glow:rgba(0,229,255,0.25);
+  --green:      #00d48a;
+  --green-dim:  rgba(0,212,138,0.1);
+  --red:        #ff4f4f;
+  --red-dim:    rgba(255,79,79,0.1);
+  --amber:      #ffb020;
+  --amber-dim:  rgba(255,176,32,0.1);
+  --push:       #55555f;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Space Grotesk', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+body::before {
+  content: '';
+  position: fixed; inset: 0; pointer-events: none; z-index: 0;
+  background-image:
+    linear-gradient(rgba(0,229,255,0.015) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,229,255,0.015) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+/* ── HEADER ── */
+header {
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(8,8,9,0.92);
+  backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+  border-bottom: 1px solid var(--border);
+}
+
+.header-inner {
+  max-width: 900px; margin: 0 auto;
+  padding: 0 1.5rem; height: 66px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+
+.logo { display: flex; align-items: center; gap: 11px; }
+
+.logo-mark {
+  width: 38px; height: 38px; border-radius: 10px;
+  border: 1px solid var(--accent);
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 0 18px var(--accent-glow), inset 0 0 12px rgba(0,229,255,0.07);
+}
+.logo-mark svg { width: 18px; height: 18px; stroke: var(--accent); }
+
+.logo-wordmark { display: flex; flex-direction: column; gap: 1px; }
+.logo-top {
+  font-family: 'Space Mono', monospace;
+  font-size: 15px; font-weight: 700; color: var(--text);
+  letter-spacing: 0.06em; line-height: 1;
+}
+.logo-top span { color: var(--accent); }
+.logo-bot {
+  font-size: 9px; font-weight: 500; letter-spacing: 0.22em;
+  text-transform: uppercase; color: var(--text3); line-height: 1;
+}
+
+.header-right { display: flex; align-items: center; gap: 10px; }
+
+.live-pill {
+  display: flex; align-items: center; gap: 7px;
+  background: var(--bg3); border: 1px solid var(--border2);
+  border-radius: 999px; padding: 5px 13px;
+}
+.live-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--accent); box-shadow: 0 0 8px var(--accent-glow);
+  animation: pulse 2.2s ease-in-out infinite;
+}
+@keyframes pulse {
+  0%,100% { opacity:1; transform:scale(1); }
+  50%      { opacity:.35; transform:scale(.75); }
+}
+.live-text {
+  font-size: 10px; font-weight: 600; letter-spacing: 0.16em;
+  text-transform: uppercase; color: var(--text2);
+}
+
+/* ── STAT BAR ── */
+.stat-bar { background: var(--bg2); border-bottom: 1px solid var(--border); position: relative; z-index: 1; }
+.stat-bar-inner { max-width: 900px; margin: 0 auto; padding: 0 1.5rem; display: flex; }
+
+.stat-cell {
+  flex: 1; display: flex; flex-direction: column; align-items: center;
+  padding: 14px 8px; gap: 3px; border-right: 1px solid var(--border);
+}
+.stat-cell:last-child { border-right: none; }
+
+.stat-lbl { font-size: 9px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--text3); }
+.stat-val {
+  font-family: 'Space Mono', monospace; font-size: 22px; font-weight: 700;
+  color: var(--text); line-height: 1; font-variant-numeric: tabular-nums; letter-spacing: -0.02em;
+}
+.stat-val.g  { color: var(--green); }
+.stat-val.r  { color: var(--red); }
+.stat-val.cy { color: var(--accent); }
+
+/* ── MAIN ── */
+.page-layout {
+  max-width: 1100px; margin: 0 auto;
+  padding: 2rem 1.5rem 6rem;
+  position: relative; z-index: 1;
+  display: grid;
+  grid-template-columns: 1fr 180px;
+  gap: 1.5rem;
+  align-items: start;
+}
+
+.main {
+  display: flex; flex-direction: column; gap: 2.5rem; min-width: 0;
+}
+
+/* ── SIDEBAR ── */
+.sidebar {
+  position: sticky; top: 90px;
+  display: flex; flex-direction: column; gap: 8px;
+}
+
+.sidebar-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.sidebar-card-head {
+  padding: 7px 11px;
+  border-bottom: 1px solid var(--border);
+  font-size: 9px; font-weight: 700;
+  letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--text3);
+}
+
+.sidebar-stat {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 6px 11px;
+  border-bottom: 1px solid var(--border);
+  font-size: 11px;
+}
+.sidebar-stat:last-child { border-bottom: none; }
+
+.sidebar-stat-lbl { color: var(--text2); }
+.sidebar-stat-val {
+  font-family: 'Space Mono', monospace;
+  font-size: 12px; font-weight: 700;
+  color: var(--text); font-variant-numeric: tabular-nums;
+}
+.sidebar-stat-val.g  { color: var(--green); }
+.sidebar-stat-val.r  { color: var(--red); }
+.sidebar-stat-val.cy { color: var(--accent); }
+
+.streak-dots {
+  display: flex; gap: 3px; flex-wrap: wrap; padding: 8px 11px;
+}
+.sdot {
+  width: 8px; height: 8px; border-radius: 50%;
+  flex-shrink: 0;
+}
+.sdot-w { background: var(--green); }
+.sdot-l { background: var(--red); }
+.sdot-p { background: var(--push); }
+
+.best-day-row {
+  padding: 6px 11px;
+  border-bottom: 1px solid var(--border);
+}
+.best-day-row:last-child { border-bottom: none; }
+.best-day-lbl { font-size: 9px; color: var(--text3); margin-bottom: 1px; }
+.best-day-val { font-family: 'Space Mono', monospace; font-size: 11px; font-weight: 700; }
+.best-day-val.g { color: var(--green); }
+.best-day-val.r { color: var(--red); }
+
+@media (max-width: 780px) {
+  .page-layout {
+    grid-template-columns: 1fr;
+  }
+  .sidebar {
+    position: static;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    order: -1;
+  }
+}
+
+.section-head { display: flex; align-items: center; gap: 12px; margin-bottom: 1.25rem; }
+.section-lbl {
+  font-size: 9px; font-weight: 700; letter-spacing: 0.22em;
+  text-transform: uppercase; color: var(--text3); white-space: nowrap;
+}
+.section-rule { flex: 1; height: 1px; background: var(--border); }
+.section-ct   { font-size: 10px; color: var(--text3); font-variant-numeric: tabular-nums; }
+.section-date { font-family: 'Space Mono', monospace; font-size: 11px; color: var(--accent); letter-spacing: 0.04em; }
+
+/* ── PICK CARDS ── */
+.picks { display: flex; flex-direction: column; gap: 14px; }
+
+.pick-card {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 16px; overflow: hidden;
+  transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+  animation: rise 0.5s cubic-bezier(0.22,1,0.36,1) both;
+}
+.pick-card:hover {
+  border-color: var(--border2); transform: translateY(-2px);
+  box-shadow: 0 12px 48px rgba(0,0,0,0.6), 0 0 0 1px rgba(0,229,255,0.04);
+}
+
+@keyframes rise {
+  from { opacity:0; transform:translateY(16px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+.pick-card:nth-child(1){animation-delay:.04s}
+.pick-card:nth-child(2){animation-delay:.09s}
+.pick-card:nth-child(3){animation-delay:.14s}
+.pick-card:nth-child(4){animation-delay:.19s}
+
+.card-stripe { height: 2px; }
+.cs-win  { background: linear-gradient(90deg,var(--green) 0%,transparent 65%); }
+.cs-loss { background: linear-gradient(90deg,var(--red)   0%,transparent 65%); }
+.cs-pend { background: linear-gradient(90deg,var(--amber) 0%,transparent 65%); }
+.cs-push { background: linear-gradient(90deg,var(--push)  0%,transparent 65%); }
+
+.card-body {
+  padding: 1.1rem 1.5rem 0.9rem;
+  display: grid; grid-template-columns: 1fr auto;
+  gap: 8px 20px; align-items: start;
+}
+
+.matchup {
+  font-family: 'Space Mono', monospace; font-size: 17px; font-weight: 700;
+  color: var(--text); line-height: 1.2; letter-spacing: -0.02em; margin-bottom: 9px;
+}
+
+.card-details { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+
+.det { display: flex; align-items: center; gap: 5px; font-size: 13px; color: var(--text2); }
+.det svg { width: 13px; height: 13px; opacity: 0.5; flex-shrink: 0; }
+
+.pick-name { font-weight: 700; font-size: 14px; color: var(--text); }
+
+.chip {
+  font-family: 'Space Mono', monospace;
+  border-radius: 6px; padding: 3px 10px;
+  font-size: 12px; font-weight: 700; font-variant-numeric: tabular-nums;
+  border: 1px solid var(--border2); background: var(--bg4);
+}
+.chip-odds  { color: var(--accent); }
+.chip-winpct{ color: var(--green); }
+.chip-bet   { color: var(--text2); }
+.chip-time  { color: var(--text3); font-size: 11px; }
+
+.card-right { display: flex; flex-direction: column; align-items: flex-end; gap: 10px; padding-top: 2px; }
+
+.result-badge {
+  font-size: 10px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase;
+  padding: 5px 14px; border-radius: 6px; border: 1px solid transparent;
+}
+.rb-win  { background: var(--green-dim); color: var(--green); border-color: rgba(0,212,138,0.2); }
+.rb-loss { background: var(--red-dim);   color: var(--red);   border-color: rgba(255,79,79,0.2); }
+.rb-pend { background: var(--amber-dim); color: var(--amber); border-color: rgba(255,176,32,0.2); }
+.rb-push { background: rgba(85,85,95,.15); color: var(--push); border-color: rgba(85,85,95,.25); }
+
+.pl-val {
+  font-family: 'Space Mono', monospace; font-size: 15px; font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+.pl-pos { color: var(--green); }
+.pl-neg { color: var(--red); }
+.pl-nil { color: var(--text3); }
+
+/* ── VOTE BAR ── */
+.vote-bar {
+  display: flex; align-items: center; gap: 12px;
+  padding: 11px 1.5rem 14px; border-top: 1px solid var(--border);
+}
+.vote-btns { display: flex; gap: 7px; flex-shrink: 0; }
+
+.vbtn {
+  font-family: 'Space Grotesk', sans-serif; font-size: 12px; font-weight: 700;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  padding: 7px 18px; border-radius: 8px; border: 1px solid transparent;
+  cursor: pointer; background: transparent; transition: all 0.16s ease;
+}
+.vbtn-tail { border-color: rgba(0,212,138,.35); color: var(--green); }
+.vbtn-tail:hover { background: rgba(0,212,138,.1); }
+.vbtn-tail.active { background: var(--green); border-color: var(--green); color: #080809; box-shadow: 0 0 18px rgba(0,212,138,.35); }
+.vbtn-fade { border-color: rgba(255,79,79,.35); color: var(--red); }
+.vbtn-fade:hover { background: rgba(255,79,79,.1); }
+.vbtn-fade.active { background: var(--red); border-color: var(--red); color: #fff; box-shadow: 0 0 18px rgba(255,79,79,.35); }
+
+.vote-progress { flex: 1; display: flex; flex-direction: column; gap: 5px; }
+.vote-track { height: 4px; border-radius: 999px; background: rgba(255,79,79,.18); overflow: hidden; }
+.vote-fill  { height: 100%; border-radius: 999px; background: var(--green); transition: width 0.5s cubic-bezier(0.34,1.56,0.64,1); }
+.vote-counts { display: flex; justify-content: space-between; font-size: 11px; font-variant-numeric: tabular-nums; }
+.vc-tail { color: var(--green); font-weight: 600; }
+.vc-fade { color: var(--red);   font-weight: 600; }
+
+/* ── PAST TABLE ── */
+.past-wrap { background: var(--bg2); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; }
+.past-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.past-table thead tr { border-bottom: 1px solid var(--border2); }
+.past-table th {
+  font-size: 9px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--text3); padding: 12px 16px; text-align: left;
+}
+.past-table th.right { text-align: right; }
+.past-table tbody tr { border-bottom: 1px solid var(--border); transition: background .12s; }
+.past-table tbody tr:last-child { border-bottom: none; }
+.past-table tbody tr:hover { background: var(--bg3); }
+.past-table td { padding: 12px 16px; color: var(--text2); vertical-align: middle; }
+.past-table td.mono { font-family: 'Space Mono', monospace; font-size: 12px; }
+.past-table td.bold { color: var(--text); font-weight: 500; }
+.past-table td.right { text-align: right; }
+.past-table td.acc   { color: var(--accent); font-family: 'Space Mono', monospace; font-size: 12px; font-weight: 700; }
+.past-table td.pl-g  { color: var(--green); font-family: 'Space Mono', monospace; font-weight: 700; font-size: 12px; text-align: right; }
+.past-table td.pl-r  { color: var(--red);   font-family: 'Space Mono', monospace; font-weight: 700; font-size: 12px; text-align: right; }
+.past-table td.pl-n  { color: var(--text3); font-family: 'Space Mono', monospace; font-size: 12px; text-align: right; }
+
+.mini-badge {
+  font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+  padding: 3px 10px; border-radius: 5px; border: 1px solid transparent; display: inline-block;
+}
+.mb-win  { background: var(--green-dim); color: var(--green); border-color: rgba(0,212,138,.2); }
+.mb-loss { background: var(--red-dim);   color: var(--red);   border-color: rgba(255,79,79,.2); }
+.mb-push { background: rgba(85,85,95,.15); color: var(--push); border-color: rgba(85,85,95,.25); }
+.mb-pend { background: var(--amber-dim); color: var(--amber); border-color: rgba(255,176,32,.2); }
+
+.empty-state { text-align: center; padding: 2.5rem 1rem; color: var(--text3); font-size: 13px; }
+
+footer {
+  text-align: center; padding: 2rem 1rem 3rem;
+  font-size: 11px; color: var(--text3); letter-spacing: 0.06em;
+  border-top: 1px solid var(--border); position: relative; z-index: 1;
+}
+
+@media (max-width: 600px) {
+  .card-body { grid-template-columns: 1fr; }
+  .card-right { flex-direction: row; align-items: center; justify-content: space-between; }
+  .matchup { font-size: 14px; }
+  .vote-bar { flex-wrap: wrap; }
+  .stat-val { font-size: 18px; }
+  .past-table th:nth-child(4), .past-table td:nth-child(4) { display: none; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="logo">
+      <div class="logo-mark">
+        <svg viewBox="0 0 18 18" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M2 14L9 3l7 11"/><path d="M5 10h8"/>
+        </svg>
+      </div>
+      <div class="logo-wordmark">
+        <div class="logo-top">ARB<span>TRACKER</span></div>
+        <div class="logo-bot">Daily Picks</div>
+      </div>
+    </div>
+    <div class="header-right">
+      <div class="live-pill">
+        <div class="live-dot"></div>
+        <span class="live-text">Live</span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="stat-bar">
+  <div class="stat-bar-inner">
+    <div class="stat-cell">
+      <div class="stat-lbl">All-Time Record</div>
+      <div class="stat-val" id="s-record">—</div>
+    </div>
+    <div class="stat-cell">
+      <div class="stat-lbl">Win %</div>
+      <div class="stat-val" id="s-winpct">—</div>
+    </div>
+    <div class="stat-cell">
+      <div class="stat-lbl">Total P/L</div>
+      <div class="stat-val" id="s-pl">—</div>
+    </div>
+    <div class="stat-cell">
+      <div class="stat-lbl">Today's P/L</div>
+      <div class="stat-val cy" id="s-today">—</div>
+    </div>
+  </div>
+</div>
+
+<div class="page-layout">
+
+  <main class="main">
+
+  <!-- TODAY -->
+  <div>
+    <div class="section-head">
+      <span class="section-lbl">Today's Slate</span>
+      <div class="section-rule"></div>
+      <span class="section-date">May 28, 2026</span>
+    </div>
+    <div class="picks" id="today-list"></div>
+  </div>
+
+  <!-- PAST -->
+  <div>
+    <div class="section-head">
+      <span class="section-lbl">Past Picks</span>
+      <div class="section-rule"></div>
+      <span class="section-ct" id="past-count"></span>
+    </div>
+    <div id="past-list"></div>
+  </div>
+
+  </main>
+
+<!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-card">
+      <div class="sidebar-card-head">All-Time Stats</div>
+      <div class="sidebar-stat">
+        <span class="sidebar-stat-lbl">Record</span>
+        <span class="sidebar-stat-val" id="sb-record">—</span>
+      </div>
+      <div class="sidebar-stat">
+        <span class="sidebar-stat-lbl">Win %</span>
+        <span class="sidebar-stat-val" id="sb-winpct">—</span>
+      </div>
+      <div class="sidebar-stat">
+        <span class="sidebar-stat-lbl">Total P/L</span>
+        <span class="sidebar-stat-val" id="sb-pl">—</span>
+      </div>
+      <div class="sidebar-stat">
+        <span class="sidebar-stat-lbl">ROI</span>
+        <span class="sidebar-stat-val" id="sb-roi">—</span>
+      </div>
+      <div class="sidebar-stat">
+        <span class="sidebar-stat-lbl">Avg P/L/day</span>
+        <span class="sidebar-stat-val" id="sb-avgday">—</span>
+      </div>
+      <div class="sidebar-stat">
+        <span class="sidebar-stat-lbl">Total wagered</span>
+        <span class="sidebar-stat-val cy" id="sb-wagered">—</span>
+      </div>
+    </div>
+
+    <div class="sidebar-card">
+      <div class="sidebar-card-head">Recent Form</div>
+      <div class="streak-dots" id="sb-streak"></div>
+    </div>
+
+    <div class="sidebar-card">
+      <div class="sidebar-card-head">Best &amp; Worst</div>
+      <div class="best-day-row">
+        <div class="best-day-lbl">Best day</div>
+        <div class="best-day-val g" id="sb-best">—</div>
+      </div>
+      <div class="best-day-row">
+        <div class="best-day-lbl">Worst day</div>
+        <div class="best-day-val r" id="sb-worst">—</div>
+      </div>
+      <div class="best-day-row">
+        <div class="best-day-lbl">Longest W streak</div>
+        <div class="best-day-val g" id="sb-wstreak">—</div>
+      </div>
+      <div class="best-day-row">
+        <div class="best-day-lbl">Longest L streak</div>
+        <div class="best-day-val r" id="sb-lstreak">—</div>
+      </div>
+    </div>
+  </aside>
+
+</div>
+
+<footer>For entertainment purposes only &nbsp;·&nbsp; Please gamble responsibly</footer>
+
+<script>
+
+// ════════════════════════════════════════════════
+//  TODAY'S PICKS  —  May 28, 2026
+// ════════════════════════════════════════════════
+const TODAY_PICKS = [
+  {
+    id: "2026-05-28-t1",
+    matchup: "Diaz Acosta +2.5 sets",
+    pick: "Diaz Acosta +2.5 sets",
+    line: "-170",
+    winPct: "",
+    time: "Fanatics",
+    bet: "$15.00",
+    result: "pending",
+    pl: null
+  },
+  {
+    id: "2026-05-28-t2",
+    matchup: "Faria ML",
+    pick: "Faria ML",
+    line: "-160",
+    winPct: "",
+    time: "Fanatics",
+    bet: "$35.00",
+    result: "pending",
+    pl: null
+  },
+  {
+    id: "2026-05-28-t3",
+    matchup: "Kouame +2.5 sets",
+    pick: "Kouame +2.5 sets",
+    line: "-200",
+    winPct: "",
+    time: "Fanatics",
+    bet: "$20.00",
+    result: "pending",
+    pl: null
+  },
+  {
+    id: "2026-05-28-t4",
+    matchup: "Oliynykova -1.5 sets",
+    pick: "Oliynykova -1.5 sets",
+    line: "+100",
+    winPct: "",
+    time: "Fanatics",
+    bet: "$10.00",
+    result: "pending",
+    pl: null
+  },
+  {
+    id: "2026-05-28-t5",
+    matchup: "Oliynykova ML",
+    pick: "Oliynykova ML",
+    line: "-225",
+    winPct: "",
+    time: "Fanatics",
+    bet: "$25.00",
+    result: "pending",
+    pl: null
+  },
+  {
+    id: "2026-05-28-t6",
+    matchup: "Cobolli ML",
+    pick: "Cobolli ML",
+    line: "-450",
+    winPct: "",
+    time: "Fanatics",
+    bet: "$40.00",
+    result: "pending",
+    pl: null
+  },
+  {
+    id: "2026-05-28-t7",
+    matchup: "Tiafoe ML",
+    pick: "Tiafoe ML",
+    line: "+120",
+    winPct: "",
+    time: "Fanatics",
+    bet: "$15.00",
+    result: "pending",
+    pl: null
+  },
+  {
+    id: "2026-05-28-t8",
+    matchup: "Kopriva ML",
+    pick: "Kopriva ML",
+    line: "-135",
+    winPct: "",
+    time: "Fanatics",
+    bet: "$10.00",
+    result: "pending",
+    pl: null
+  }
+];
+
+// ════════════════════════════════════════════════
+//  PAST PICKS  —  add previous days here (newest first)
+// ════════════════════════════════════════════════
+const PAST_PICKS = [
+  { date:"May 27", matchup:"Tirante",                  pick:"Tirante",                  line:"-155", winPct:"", bet:"$15.00", result:"win",  pl:"+$9.68"  },
+  { date:"May 27", matchup:"Khachanov -1.5 sets",      pick:"Khachanov -1.5 sets",      line:"-200", winPct:"", bet:"$20.00", result:"win",  pl:"+$10.00" },
+  { date:"May 27", matchup:"De Jong",                  pick:"De Jong",                  line:"-170", winPct:"", bet:"$15.00", result:"win",  pl:"+$8.82"  },
+  { date:"May 27", matchup:"Mensik",                   pick:"Mensik",                   line:"-125", winPct:"", bet:"$10.00", result:"win",  pl:"+$8.00"  },
+  { date:"May 27", matchup:"Borges",                   pick:"Borges",                   line:"+140", winPct:"", bet:"$7.50",  result:"win",  pl:"+$10.50" },
+  { date:"May 27", matchup:"Jodar/Duckworth U29.5",    pick:"Under 29.5 games",         line:"-145", winPct:"", bet:"$15.00", result:"loss", pl:"-$15.00" },
+  { date:"May 27", matchup:"Carreno Busta -1.5 sets",  pick:"Carreno Busta -1.5 sets",  line:"-150", winPct:"", bet:"$15.00", result:"push", pl:null      },
+  { date:"May 27", matchup:"Basavareddy",              pick:"Basavareddy",              line:"+155", winPct:"", bet:"$7.50",  result:"loss", pl:"-$7.50"  },
+  { date:"May 27", matchup:"Fonseca",                  pick:"Fonseca",                  line:"-110", winPct:"", bet:"$25.00", result:"win",  pl:"+$22.73" },
+  { date:"May 26", matchup:"Tabilo -1.5 sets",   pick:"Tabilo -1.5 sets",   line:"-250", winPct:"", bet:"$20.00", result:"win",  pl:"+$8.00"  },
+  { date:"May 26", matchup:"Kouame",              pick:"Kouame",             line:"+280", winPct:"", bet:"$5.00",  result:"win",  pl:"+$14.00" },
+  { date:"May 26", matchup:"Griekspoor",          pick:"Griekspoor",         line:"+105", winPct:"", bet:"$10.00", result:"loss", pl:"-$10.00" },
+  { date:"May 26", matchup:"Fruhvirtova",         pick:"Fruhvirtova",        line:"+105", winPct:"", bet:"$5.00",  result:"loss", pl:"-$5.00"  },
+  { date:"May 26", matchup:"Vallejo",             pick:"Vallejo",            line:"-125", winPct:"", bet:"$15.00", result:"win",  pl:"+$12.00" },
+  { date:"May 26", matchup:"Garin +1.5 sets",     pick:"Garin +1.5 sets",   line:"-125", winPct:"", bet:"$15.00", result:"loss", pl:"-$15.00" },
+  { date:"May 26", matchup:"Altmaier",            pick:"Altmaier",           line:"+260", winPct:"", bet:"$5.00",  result:"loss", pl:"-$5.00"  },
+  { date:"May 26", matchup:"Oliynykova",          pick:"Oliynykova",         line:"-220", winPct:"", bet:"$11.00", result:"win",  pl:"+$5.00"  },
+  { date:"May 26", matchup:"Cerundolo -1.5 sets", pick:"Cerundolo -1.5 sets",line:"-220", winPct:"", bet:"$20.00", result:"win",  pl:"+$9.09"  },
+  { date:"May 26", matchup:"Over 36.5 games",     pick:"Over 36.5 games",   line:"-120", winPct:"", bet:"$10.00", result:"push", pl:null      },
+  { date:"May 26", matchup:"Faria -1.5 sets",     pick:"Faria -1.5 sets",   line:"-155", winPct:"", bet:"$10.00", result:"win",  pl:"+$6.45"  },
+  { date:"May 26", matchup:"Darderi -1.5 sets",   pick:"Darderi -1.5 sets", line:"-175", winPct:"", bet:"$15.00", result:"win",  pl:"+$8.57"  },
+  { date:"May 25", matchup:"Rinderknecht",              pick:"Rinderknecht", line:"-285", winPct:"", bet:"$70.00", result:"win",  pl:"+$24.56" },
+  { date:"May 25", matchup:"Cobolli",                   pick:"Cobolli",      line:"-310", winPct:"", bet:"$60.00", result:"win",  pl:"+$19.35" },
+  { date:"May 25", matchup:"Buse",                      pick:"Buse",         line:"+165", winPct:"", bet:"$15.00", result:"loss", pl:"-$15.00" },
+  { date:"May 25", matchup:"Urhobo",                    pick:"Urhobo",       line:"+205", winPct:"", bet:"$15.00", result:"loss", pl:"-$15.00" },
+  { date:"May 25", matchup:"Vukic match — Under 32.5",  pick:"Under 32.5",  line:"-140", winPct:"", bet:"$8.35",  result:"win",  pl:"+$5.96"  },
+  { date:"May 24", matchup:"Marozsan",   pick:"Marozsan",   line:"+130", winPct:"", bet:"$10.00", result:"loss", pl:"-$10.00" },
+  { date:"May 24", matchup:"Machac",     pick:"Machac",     line:"-170", winPct:"", bet:"$15.00", result:"win",  pl:"+$8.82"  },
+  { date:"May 24", matchup:"Duckworth",  pick:"Duckworth",  line:"+145", winPct:"", bet:"$15.00", result:"win",  pl:"+$21.75" },
+  { date:"May 24", matchup:"Etcheverry", pick:"Etcheverry", line:"-236", winPct:"", bet:"$26.54", result:"loss", pl:"-$26.54" },
+  { date:"May 24", matchup:"Dellien",    pick:"Dellien",    line:"-140", winPct:"", bet:"$15.00", result:"loss", pl:"-$15.00" },
+  { date:"May 24", matchup:"Mensik",     pick:"Mensik",     line:"-230", winPct:"", bet:"$38.31", result:"win",  pl:"+$16.65" },
+  { date:"May 23", matchup:"Ivashka", pick:"Ivashka", line:"-240",        winPct:"", bet:"$10.24", result:"loss", pl:"-$10.24" },
+  { date:"May 23", matchup:"Buse",    pick:"Buse",    line:"+135 / +142", winPct:"", bet:"$30.00", result:"win",  pl:"+$41.90" },
+  { date:"May 23", matchup:"Navone",  pick:"Navone",  line:"-145 / -144", winPct:"", bet:"$55.23", result:"loss", pl:"-$55.23" },
+  { date:"May 23", matchup:"Mboko",   pick:"Mboko",   line:"-195",        winPct:"", bet:"$20.00", result:"loss", pl:"-$20.00" },
+  { date:"May 22", matchup:"Bar Biryukov",   pick:"Bar Biryukov", line:"+120", winPct:"67%", bet:"$50",    result:"win",  pl:"+$60.00" },
+  { date:"May 22", matchup:"Gojo",           pick:"Gojo",         line:"+115", winPct:"68%", bet:"$50",    result:"loss", pl:"-$50.00" },
+  { date:"May 22", matchup:"Tommy Paul",     pick:"Tommy Paul",   line:"+115", winPct:"69%", bet:"$51",    result:"win",  pl:"+$58.65" },
+  { date:"May 22", matchup:"Bublik vs Tien", pick:"Bublik",       line:"-145", winPct:"",    bet:"$20.00", result:"loss", pl:"-$20.00" },
+  { date:"May 22", matchup:"Ruud",           pick:"Ruud",         line:"-380", winPct:"",    bet:"$39.90", result:"loss", pl:"-$39.90" },
+  { date:"May 21", matchup:"Faria vs Neumayer",        pick:"Faria",       line:"-115 / -123", winPct:"", bet:"$40.08", result:"win",  pl:"+$31.64" },
+  { date:"May 21", matchup:"Cecchinato vs Pellegrino", pick:"Cecchinato",  line:"+193",        winPct:"", bet:"$45.00", result:"loss", pl:"-$45.00" },
+  { date:"May 21", matchup:"Humbert vs Buse",          pick:"Humbert",     line:"+194",        winPct:"", bet:"$50.00", result:"loss", pl:"-$50.00" },
+  { date:"May 21", matchup:"Darderi vs De Minaur",     pick:"Darderi",     line:"+110 / +105", winPct:"", bet:"$28.00", result:"loss", pl:"-$28.00" },
+  { date:"May 21", matchup:"Rinderknech vs Bublik",    pick:"Rinderknech", line:"+125 / +125", winPct:"", bet:"$40.00", result:"loss", pl:"-$40.00" },
+  { date:"May 20", matchup:"Goffin",     pick:"Goffin",     line:"+120 / +112", winPct:"", bet:"$29.58", result:"loss", pl:"-$29.58" },
+  { date:"May 20", matchup:"Fritz",      pick:"Fritz",      line:"-120 / -131", winPct:"", bet:"$29.88", result:"loss", pl:"-$29.88" },
+  { date:"May 20", matchup:"Navone",     pick:"Navone",     line:"-140",        winPct:"", bet:"$65.00", result:"win",  pl:"+$46.43" },
+  { date:"May 20", matchup:"Tommy Paul", pick:"Tommy Paul", line:"-145",        winPct:"", bet:"$65.00", result:"win",  pl:"+$44.83" },
+  { date:"May 19", matchup:"Faria",     pick:"Faria",     line:"-145 / -134", winPct:"", bet:"$80.00", result:"win",  pl:"+$58.26" },
+  { date:"May 19", matchup:"Cerundolo", pick:"Cerundolo", line:"-125 / -119", winPct:"", bet:"$45.00", result:"push", pl:null },
+  { date:"May 19", matchup:"Cobolli",   pick:"Cobolli",   line:"-145 / -154", winPct:"", bet:"$45.00", result:"loss", pl:"-$45.00" },
+  { date:"May 18", matchup:"Shelton",    pick:"Shelton",    line:"-314", winPct:"78%", bet:"$60",    result:"win",  pl:"+$19.11" },
+  { date:"May 18", matchup:"Cerundolo",  pick:"Cerundolo",  line:"-192", winPct:"74%", bet:"$75",    result:"loss", pl:"-$75.00" },
+  { date:"May 18", matchup:"Etcheverry", pick:"Etcheverry", line:"-206", winPct:"72%", bet:"$35",    result:"win",  pl:"+$16.99" },
+  { date:"May 18", matchup:"Baez",       pick:"Baez",       line:"-180", winPct:"68%", bet:"$31.50", result:"loss", pl:"-$31.50" },
+  { date:"May 18", matchup:"Wawrinka",   pick:"Wawrinka",   line:"-200", winPct:"70%", bet:"$20",    result:"win",  pl:"+$10.00" },
+  { date:"May 17", matchup:"Basavareddy", pick:"Basavareddy", line:"-110", winPct:"72%", bet:"$45", result:"win", pl:"+$40.91" },
+  { date:"May 17", matchup:"Tommy Paul",  pick:"Tommy Paul",  line:"-260", winPct:"73%", bet:"$48", result:"win", pl:"+$18.46" },
+  { date:"May 17", matchup:"Tiafoe",      pick:"Tiafoe",      line:"-275", winPct:"76%", bet:"$75", result:"win", pl:"+$27.27" },
+  { date:"May 16", matchup:"Muller vs Butvilas",    pick:"Muller",    line:"-180",     winPct:"71%", bet:"$33.25", result:"loss", pl:"-$33.25" },
+  { date:"May 16", matchup:"Gibson vs Lys",          pick:"Lys",       line:"-260",     winPct:"65%", bet:"$20.00", result:"loss", pl:"-$20.00" },
+  { date:"May 16", matchup:"Cerundolo vs Halys",     pick:"Cerundolo", line:"-171 avg", winPct:"73%", bet:"$75.19", result:"win",  pl:"+$43.97" },
+  { date:"May 16", matchup:"Tabilo vs Kecmanovic",   pick:"Tabilo",    line:"-150",     winPct:"68%", bet:"$36.75", result:"loss", pl:"-$36.75" },
+  { date:"May 16", matchup:"Vallejo vs Munar",       pick:"Vallejo",   line:"-124",     winPct:"65%", bet:"$20.00", result:"win",  pl:"+$16.13" },
+  { date:"May 15", matchup:"Tabilo vs Lajovic",      pick:"Tabilo",    line:"-375",     winPct:"76%", bet:"$50",    result:"win",  pl:"+$13.33" },
+  { date:"May 15", matchup:"Ruud vs Darderi",        pick:"Ruud",      line:"-310",     winPct:"76%", bet:"$100",   result:"win",  pl:"+$32.26" },
+  { date:"May 15", matchup:"Coppejans vs Blanch",    pick:"Coppejans", line:"-170",     winPct:"73%", bet:"$36",    result:"loss", pl:"-$36.00" },
+  { date:"May 15", matchup:"VdZ vs Halys",           pick:"VdZ",       line:"-165",     winPct:"63%", bet:"$20",    result:"push", pl:null },
+  { date:"May 14", matchup:"Munar vs Dzumhur",       pick:"Munar",     line:"-275",     winPct:"74%", bet:"$55",    result:"win",  pl:"+$20.00" },
+  { date:"May 14", matchup:"Bergs vs Bautista-Agut", pick:"Bergs",     line:"-200",     winPct:"73%", bet:"$35",    result:"win",  pl:"+$17.50" },
+  { date:"May 14", matchup:"Swiatek vs Svitolina",   pick:"Swiatek",   line:"-375",     winPct:"72%", bet:"$251",   result:"loss", pl:"-$251.00" },
+];
+
+
+// ════════════════════════════════════════════════
+//  ENGINE
+// ════════════════════════════════════════════════
+
+// ⚡ SUPABASE CONFIG — replace with your keys after setup
+const SUPABASE_URL = 'https://wxaheargnhcdwqmrvkvu.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_QmglHPmi1k6nefydbX1yhw_NeY4_dqo';
+
+const sbHeaders = {
+  'Content-Type': 'application/json',
+  'apikey': SUPABASE_KEY,
+  'Authorization': 'Bearer ' + SUPABASE_KEY
+};
+
+const stripeMap = { win:'cs-win', loss:'cs-loss', pending:'cs-pend', push:'cs-push' };
+const badgeMap  = { win:'rb-win', loss:'rb-loss', pending:'rb-pend', push:'rb-push' };
+const miniMap   = { win:'mb-win', loss:'mb-loss', push:'mb-push', pending:'mb-pend' };
+
+function getMyVote(id)       { try { return localStorage.getItem('myv_'+id); } catch(e) { return null; } }
+function setMyVote(id, type) { try { localStorage.setItem('myv_'+id, type); } catch(e) {} }
+
+async function fetchVotes(id) {
+  try {
+    const res  = await fetch(`${SUPABASE_URL}/rest/v1/votes?pick_id=eq.${id}&select=tail,fade`, { headers: sbHeaders });
+    const rows = await res.json();
+    if (rows && rows.length > 0) return { tail: rows[0].tail, fade: rows[0].fade };
+  } catch(e) {}
+  return { tail: 0, fade: 0 };
+}
+
+async function vote(id, type) {
+  const myVote  = getMyVote(id);
+  if (myVote === type) return;
+  const current = await fetchVotes(id);
+  const updates = { pick_id: id, tail: current.tail, fade: current.fade };
+  if (myVote && updates[myVote] > 0) updates[myVote]--;
+  updates[type]++;
+  try {
+    await fetch(`${SUPABASE_URL}/rest/v1/votes`, {
+      method: 'POST',
+      headers: { ...sbHeaders, 'Prefer': 'resolution=merge-duplicates' },
+      body: JSON.stringify(updates)
+    });
+  } catch(e) {}
+  setMyVote(id, type);
+  refreshVoteUI(id, updates.tail, updates.fade);
+}
+
+function refreshVoteUI(id, tail, fade) {
+  const pct    = Math.round(tail / (tail + fade || 1) * 100);
+  const myVote = getMyVote(id);
+  const g = s => document.getElementById(s+'_'+id);
+  if (!g('tb')) return;
+  g('tb').classList.toggle('active', myVote === 'tail');
+  g('fb').classList.toggle('active', myVote === 'fade');
+  g('vf').style.width = pct + '%';
+  g('tc').textContent = tail + ' tailing';
+  g('fc').textContent = fade + ' fading';
+}
+
+async function loadVotes(id) {
+  const { tail, fade } = await fetchVotes(id);
+  refreshVoteUI(id, tail, fade);
+}
+
+function plClass(pl) {
+  if (!pl || pl === '-') return 'pl-nil';
+  return pl.startsWith('+') ? 'pl-pos' : 'pl-neg';
+}
+
+function cardHTML(p) {
+  const myVote    = getMyVote(p.id);
+  const plDisplay = p.pl || '—';
+  return `
+<div class="pick-card" id="card_${p.id}">
+  <div class="card-stripe ${stripeMap[p.result]||'cs-pend'}"></div>
+  <div class="card-body">
+    <div>
+      <div class="matchup">${p.matchup}</div>
+      <div class="card-details">
+        <div class="det">
+          <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round">
+            <path d="M7 1l1.8 3.6L13 5.3l-3 2.9.7 4.1L7 10.4l-3.7 1.9.7-4.1-3-2.9 4.2-.7z"/>
+          </svg>
+          <span class="pick-name">${p.pick}</span>
+        </div>
+        <span class="chip chip-odds">${p.line}</span>
+        <span class="chip chip-winpct">${p.winPct} win</span>
+        <span class="chip chip-bet">${p.bet}</span>
+        <span class="chip chip-time">${p.time}</span>
+      </div>
+    </div>
+    <div class="card-right">
+      <span class="result-badge ${badgeMap[p.result]||'rb-pend'}">${p.result}</span>
+      <span class="pl-val ${plClass(p.pl)}">${plDisplay}</span>
+    </div>
+  </div>
+  <div class="vote-bar">
+    <div class="vote-btns">
+      <button class="vbtn vbtn-tail${myVote==='tail'?' active':''}" id="tb_${p.id}" onclick="vote('${p.id}','tail')">Tail</button>
+      <button class="vbtn vbtn-fade${myVote==='fade'?' active':''}" id="fb_${p.id}" onclick="vote('${p.id}','fade')">Fade</button>
+    </div>
+    <div class="vote-progress">
+      <div class="vote-track"><div class="vote-fill" id="vf_${p.id}" style="width:0%"></div></div>
+      <div class="vote-counts">
+        <span class="vc-tail" id="tc_${p.id}">0 tailing</span>
+        <span class="vc-fade" id="fc_${p.id}">0 fading</span>
+      </div>
+    </div>
+  </div>
+</div>`;
+}
+
+function renderToday() {
+  document.getElementById('today-list').innerHTML = TODAY_PICKS.map(cardHTML).join('');
+  TODAY_PICKS.forEach(p => loadVotes(p.id));
+}
+
+function renderPast() {
+  const container = document.getElementById('past-list');
+  document.getElementById('past-count').textContent = PAST_PICKS.length + ' pick' + (PAST_PICKS.length !== 1 ? 's' : '');
+  if (!PAST_PICKS.length) {
+    container.innerHTML = '<div class="empty-state">Past picks will appear here after each day.</div>';
+    return;
+  }
+  container.innerHTML = `
+<div class="past-wrap">
+<table class="past-table">
+  <thead><tr>
+    <th>Date</th><th>Matchup</th><th>Pick</th><th>Line</th><th>Win %</th><th>Bet</th><th>Result</th><th class="right">P/L</th>
+  </tr></thead>
+  <tbody>
+    ${PAST_PICKS.map(p => `
+    <tr>
+      <td class="mono">${p.date}</td>
+      <td class="bold">${p.matchup}</td>
+      <td>${p.pick}</td>
+      <td class="acc">${p.line}</td>
+      <td class="mono">${p.winPct}</td>
+      <td class="mono">${p.bet}</td>
+      <td><span class="mini-badge ${miniMap[p.result]||'mb-pend'}">${p.result}</span></td>
+      <td class="${p.pl && p.pl.startsWith('+') ? 'pl-g' : p.pl && p.pl.startsWith('-') ? 'pl-r' : 'pl-n'}">${p.pl || '—'}</td>
+    </tr>`).join('')}
+  </tbody>
+</table>
+</div>`;
+}
+
+function renderStats() {
+  const all    = [...TODAY_PICKS, ...PAST_PICKS];
+  const wins   = all.filter(p => p.result === 'win').length;
+  const losses = all.filter(p => p.result === 'loss').length;
+  const settled = wins + losses;
+  const winPct  = settled ? Math.round(wins / settled * 100) : null;
+
+  function parsePL(str) {
+    if (!str) return 0;
+    const n = parseFloat(str.replace(/[^0-9.]/g, ''));
+    return str.includes('-') ? -n : n;
+  }
+
+  const totalPL = all.reduce((sum, p) => sum + parsePL(p.pl), 0);
+  const todayPL = TODAY_PICKS.reduce((sum, p) => sum + parsePL(p.pl), 0);
+
+  const rEl = document.getElementById('s-record');
+  rEl.textContent = `${wins}-${losses}`;
+  rEl.className = 'stat-val' + (wins > losses ? ' g' : losses > wins ? ' r' : '');
+
+  const wEl = document.getElementById('s-winpct');
+  wEl.textContent = winPct !== null ? winPct + '%' : '—';
+  wEl.className = 'stat-val' + (winPct >= 55 ? ' g' : winPct !== null && winPct < 45 ? ' r' : '');
+
+  const pEl = document.getElementById('s-pl');
+  pEl.textContent = (totalPL >= 0 ? '+' : '') + '$' + Math.abs(totalPL).toFixed(2);
+  pEl.className = 'stat-val' + (totalPL > 0 ? ' g' : totalPL < 0 ? ' r' : '');
+
+  const tEl = document.getElementById('s-today');
+  tEl.textContent = (todayPL >= 0 ? '+' : '') + '$' + Math.abs(todayPL).toFixed(2);
+  tEl.className = 'stat-val' + (todayPL > 0 ? ' g' : todayPL < 0 ? ' r' : ' cy');
+}
+
+function renderSidebar() {
+  const all = [...TODAY_PICKS, ...PAST_PICKS];
+
+  function parsePL(str) {
+    if (!str) return 0;
+    const n = parseFloat(str.replace(/[^0-9.]/g, ''));
+    return str.includes('-') ? -n : n;
+  }
+
+  const wins   = all.filter(p => p.result === 'win').length;
+  const losses = all.filter(p => p.result === 'loss').length;
+  const settled = wins + losses;
+  const winPct  = settled ? Math.round(wins / settled * 100) : null;
+  const totalPL = all.reduce((s, p) => s + parsePL(p.pl), 0);
+
+  // Total wagered
+  const totalW = all.reduce((s, p) => {
+    const n = parseFloat((p.bet || '0').replace(/[^0-9.]/g, ''));
+    return s + (isNaN(n) ? 0 : n);
+  }, 0);
+
+  // ROI
+  const roi = totalW ? (totalPL / totalW * 100) : 0;
+
+  // Avg P/L per day
+  const days = [...new Set(all.map(p => p.date || 'Today'))].length;
+  const avgDay = days ? totalPL / days : 0;
+
+  // Set values
+  const set = (id, val, cls) => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.textContent = val;
+    if (cls) el.className = 'sidebar-stat-val ' + cls;
+  };
+
+  set('sb-record',  wins + '-' + losses, wins > losses ? 'g' : losses > wins ? 'r' : '');
+  set('sb-winpct',  winPct !== null ? winPct + '%' : '—', winPct >= 55 ? 'g' : winPct !== null && winPct < 45 ? 'r' : '');
+  set('sb-pl',      (totalPL >= 0 ? '+' : '') + '$' + Math.abs(totalPL).toFixed(2), totalPL > 0 ? 'g' : totalPL < 0 ? 'r' : '');
+  set('sb-roi',     (roi >= 0 ? '+' : '') + roi.toFixed(1) + '%', roi > 0 ? 'g' : roi < 0 ? 'r' : '');
+  set('sb-avgday',  (avgDay >= 0 ? '+' : '') + '$' + Math.abs(avgDay).toFixed(2), avgDay > 0 ? 'g' : avgDay < 0 ? 'r' : '');
+  set('sb-wagered', '$' + totalW.toFixed(2), 'cy');
+
+  // Recent form dots (last 10 settled)
+  const recentSettled = all.filter(p => p.result === 'win' || p.result === 'loss' || p.result === 'push').slice(0, 10);
+  const streakEl = document.getElementById('sb-streak');
+  if (streakEl) {
+    streakEl.innerHTML = recentSettled.map(p => {
+      const cls = p.result === 'win' ? 'sdot-w' : p.result === 'loss' ? 'sdot-l' : 'sdot-p';
+      return `<div class="sdot ${cls}" title="${p.matchup||p.pick}: ${p.result}"></div>`;
+    }).join('');
+  }
+
+  // Best & worst day
+  const byDate = {};
+  all.forEach(p => {
+    const d = p.date || 'Today';
+    if (!byDate[d]) byDate[d] = 0;
+    byDate[d] += parsePL(p.pl);
+  });
+  const dayVals = Object.entries(byDate);
+  if (dayVals.length) {
+    const best  = dayVals.reduce((a, b) => b[1] > a[1] ? b : a);
+    const worst = dayVals.reduce((a, b) => b[1] < a[1] ? b : a);
+    const bestEl  = document.getElementById('sb-best');
+    const worstEl = document.getElementById('sb-worst');
+    if (bestEl)  bestEl.textContent  = best[0]  + ': +$' + Math.abs(best[1]).toFixed(2);
+    if (worstEl) worstEl.textContent = worst[0] + ': -$' + Math.abs(worst[1]).toFixed(2);
+  }
+
+  // Longest win/loss streaks
+  const results = all.filter(p => p.result === 'win' || p.result === 'loss').map(p => p.result);
+  let maxW = 0, maxL = 0, curW = 0, curL = 0;
+  results.forEach(r => {
+    if (r === 'win')  { curW++; curL = 0; maxW = Math.max(maxW, curW); }
+    else              { curL++; curW = 0; maxL = Math.max(maxL, curL); }
+  });
+  const wsEl = document.getElementById('sb-wstreak');
+  const lsEl = document.getElementById('sb-lstreak');
+  if (wsEl) wsEl.textContent = maxW + ' in a row';
+  if (lsEl) lsEl.textContent = maxL + ' in a row';
+}
+
+renderToday();
+renderPast();
+renderStats();
+renderSidebar();
+</script>
+</body>
+</html>
