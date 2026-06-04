@@ -1,0 +1,1018 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Arb Tracker Picks</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:         #080809;
+  --bg2:        #101012;
+  --bg3:        #18181b;
+  --bg4:        #202024;
+  --bg5:        #28282d;
+  --border:     rgba(255,255,255,0.06);
+  --border2:    rgba(255,255,255,0.12);
+  --text:       #eeeef0;
+  --text2:      #888894;
+  --text3:      #44444e;
+  --accent:     #00e5ff;
+  --accent-dim: rgba(0,229,255,0.1);
+  --accent-glow:rgba(0,229,255,0.25);
+  --green:      #00d48a;
+  --green-dim:  rgba(0,212,138,0.1);
+  --red:        #ff4f4f;
+  --red-dim:    rgba(255,79,79,0.1);
+  --amber:      #ffb020;
+  --amber-dim:  rgba(255,176,32,0.1);
+  --push:       #55555f;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Space Grotesk', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+body::before {
+  content: '';
+  position: fixed; inset: 0; pointer-events: none; z-index: 0;
+  background-image:
+    linear-gradient(rgba(0,229,255,0.015) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,229,255,0.015) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+/* ── HEADER ── */
+header {
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(8,8,9,0.92);
+  backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+  border-bottom: 1px solid var(--border);
+}
+
+.header-inner {
+  max-width: 900px; margin: 0 auto;
+  padding: 0 1.5rem; height: 66px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+
+.logo { display: flex; align-items: center; gap: 11px; }
+
+.logo-mark {
+  width: 38px; height: 38px; border-radius: 10px;
+  border: 1px solid var(--accent);
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 0 18px var(--accent-glow), inset 0 0 12px rgba(0,229,255,0.07);
+}
+.logo-mark svg { width: 18px; height: 18px; stroke: var(--accent); }
+
+.logo-wordmark { display: flex; flex-direction: column; gap: 1px; }
+.logo-top {
+  font-family: 'Space Mono', monospace;
+  font-size: 15px; font-weight: 700; color: var(--text);
+  letter-spacing: 0.06em; line-height: 1;
+}
+.logo-top span { color: var(--accent); }
+.logo-bot {
+  font-size: 9px; font-weight: 500; letter-spacing: 0.22em;
+  text-transform: uppercase; color: var(--text3); line-height: 1;
+}
+
+.header-right { display: flex; align-items: center; gap: 10px; }
+
+.live-pill {
+  display: flex; align-items: center; gap: 7px;
+  background: var(--bg3); border: 1px solid var(--border2);
+  border-radius: 999px; padding: 5px 13px;
+}
+.live-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--accent); box-shadow: 0 0 8px var(--accent-glow);
+  animation: pulse 2.2s ease-in-out infinite;
+}
+@keyframes pulse {
+  0%,100% { opacity:1; transform:scale(1); }
+  50%      { opacity:.35; transform:scale(.75); }
+}
+.live-text {
+  font-size: 10px; font-weight: 600; letter-spacing: 0.16em;
+  text-transform: uppercase; color: var(--text2);
+}
+
+/* ── STAT BAR ── */
+.stat-bar { background: var(--bg2); border-bottom: 1px solid var(--border); position: relative; z-index: 1; }
+.stat-bar-inner { max-width: 900px; margin: 0 auto; padding: 0 1.5rem; display: flex; }
+
+.stat-cell {
+  flex: 1; display: flex; flex-direction: column; align-items: center;
+  padding: 14px 8px; gap: 3px; border-right: 1px solid var(--border);
+}
+.stat-cell:last-child { border-right: none; }
+
+.stat-lbl { font-size: 9px; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--text3); }
+.stat-val {
+  font-family: 'Space Mono', monospace; font-size: 22px; font-weight: 700;
+  color: var(--text); line-height: 1; font-variant-numeric: tabular-nums; letter-spacing: -0.02em;
+}
+.stat-val.g  { color: var(--green); }
+.stat-val.r  { color: var(--red); }
+.stat-val.cy { color: var(--accent); }
+
+/* ── MAIN ── */
+.page-layout {
+  max-width: 1100px; margin: 0 auto;
+  padding: 2rem 1.5rem 6rem;
+  position: relative; z-index: 1;
+  display: grid;
+  grid-template-columns: 1fr 180px;
+  gap: 1.5rem;
+  align-items: start;
+}
+
+.main {
+  display: flex; flex-direction: column; gap: 2.5rem; min-width: 0;
+}
+
+/* ── SIDEBAR ── */
+.sidebar {
+  position: sticky; top: 90px;
+  display: flex; flex-direction: column; gap: 8px;
+}
+
+.sidebar-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.sidebar-card-head {
+  padding: 7px 11px;
+  border-bottom: 1px solid var(--border);
+  font-size: 9px; font-weight: 700;
+  letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--text3);
+}
+
+.sidebar-stat {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 6px 11px;
+  border-bottom: 1px solid var(--border);
+  font-size: 11px;
+}
+.sidebar-stat:last-child { border-bottom: none; }
+
+.sidebar-stat-lbl { color: var(--text2); }
+.sidebar-stat-val {
+  font-family: 'Space Mono', monospace;
+  font-size: 12px; font-weight: 700;
+  color: var(--text); font-variant-numeric: tabular-nums;
+}
+.sidebar-stat-val.g  { color: var(--green); }
+.sidebar-stat-val.r  { color: var(--red); }
+.sidebar-stat-val.cy { color: var(--accent); }
+
+.streak-dots {
+  display: flex; gap: 3px; flex-wrap: wrap; padding: 8px 11px;
+}
+.sdot {
+  width: 8px; height: 8px; border-radius: 50%;
+  flex-shrink: 0;
+}
+.sdot-w { background: var(--green); }
+.sdot-l { background: var(--red); }
+.sdot-p { background: var(--push); }
+
+.best-day-row {
+  padding: 6px 11px;
+  border-bottom: 1px solid var(--border);
+}
+.best-day-row:last-child { border-bottom: none; }
+.best-day-lbl { font-size: 9px; color: var(--text3); margin-bottom: 1px; }
+.best-day-val { font-family: 'Space Mono', monospace; font-size: 11px; font-weight: 700; }
+.best-day-val.g { color: var(--green); }
+.best-day-val.r { color: var(--red); }
+
+@media (max-width: 780px) {
+  .page-layout {
+    grid-template-columns: 1fr;
+  }
+  .sidebar {
+    position: static;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    order: -1;
+  }
+}
+
+.section-head { display: flex; align-items: center; gap: 12px; margin-bottom: 1.25rem; }
+.section-lbl {
+  font-size: 9px; font-weight: 700; letter-spacing: 0.22em;
+  text-transform: uppercase; color: var(--text3); white-space: nowrap;
+}
+.section-rule { flex: 1; height: 1px; background: var(--border); }
+.section-ct   { font-size: 10px; color: var(--text3); font-variant-numeric: tabular-nums; }
+.section-date { font-family: 'Space Mono', monospace; font-size: 11px; color: var(--accent); letter-spacing: 0.04em; }
+
+/* ── PICK CARDS ── */
+.picks { display: flex; flex-direction: column; gap: 14px; }
+
+.pick-card {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 16px; overflow: hidden;
+  transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+  animation: rise 0.5s cubic-bezier(0.22,1,0.36,1) both;
+}
+.pick-card:hover {
+  border-color: var(--border2); transform: translateY(-2px);
+  box-shadow: 0 12px 48px rgba(0,0,0,0.6), 0 0 0 1px rgba(0,229,255,0.04);
+}
+
+@keyframes rise {
+  from { opacity:0; transform:translateY(16px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+.pick-card:nth-child(1){animation-delay:.04s}
+.pick-card:nth-child(2){animation-delay:.09s}
+.pick-card:nth-child(3){animation-delay:.14s}
+.pick-card:nth-child(4){animation-delay:.19s}
+
+.card-stripe { height: 2px; }
+.cs-win  { background: linear-gradient(90deg,var(--green) 0%,transparent 65%); }
+.cs-loss { background: linear-gradient(90deg,var(--red)   0%,transparent 65%); }
+.cs-pend { background: linear-gradient(90deg,var(--amber) 0%,transparent 65%); }
+.cs-push { background: linear-gradient(90deg,var(--push)  0%,transparent 65%); }
+
+.card-body {
+  padding: 1.1rem 1.5rem 0.9rem;
+  display: grid; grid-template-columns: 1fr auto;
+  gap: 8px 20px; align-items: start;
+}
+
+.matchup {
+  font-family: 'Space Mono', monospace; font-size: 17px; font-weight: 700;
+  color: var(--text); line-height: 1.2; letter-spacing: -0.02em; margin-bottom: 9px;
+}
+
+.card-details { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+
+.det { display: flex; align-items: center; gap: 5px; font-size: 13px; color: var(--text2); }
+.det svg { width: 13px; height: 13px; opacity: 0.5; flex-shrink: 0; }
+
+.pick-name { font-weight: 700; font-size: 14px; color: var(--text); }
+
+.chip {
+  font-family: 'Space Mono', monospace;
+  border-radius: 6px; padding: 3px 10px;
+  font-size: 12px; font-weight: 700; font-variant-numeric: tabular-nums;
+  border: 1px solid var(--border2); background: var(--bg4);
+}
+.chip-odds  { color: var(--accent); }
+.chip-winpct{ color: var(--green); }
+.chip-bet   { color: var(--text2); }
+.chip-time  { color: var(--text3); font-size: 11px; }
+
+.card-right { display: flex; flex-direction: column; align-items: flex-end; gap: 10px; padding-top: 2px; }
+
+.result-badge {
+  font-size: 10px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase;
+  padding: 5px 14px; border-radius: 6px; border: 1px solid transparent;
+}
+.rb-win  { background: var(--green-dim); color: var(--green); border-color: rgba(0,212,138,0.2); }
+.rb-loss { background: var(--red-dim);   color: var(--red);   border-color: rgba(255,79,79,0.2); }
+.rb-pend { background: var(--amber-dim); color: var(--amber); border-color: rgba(255,176,32,0.2); }
+.rb-push { background: rgba(85,85,95,.15); color: var(--push); border-color: rgba(85,85,95,.25); }
+
+.pl-val {
+  font-family: 'Space Mono', monospace; font-size: 15px; font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+.pl-pos { color: var(--green); }
+.pl-neg { color: var(--red); }
+.pl-nil { color: var(--text3); }
+
+/* ── VOTE BAR ── */
+.vote-bar {
+  display: flex; align-items: center; gap: 12px;
+  padding: 11px 1.5rem 14px; border-top: 1px solid var(--border);
+}
+.vote-btns { display: flex; gap: 7px; flex-shrink: 0; }
+
+.vbtn {
+  font-family: 'Space Grotesk', sans-serif; font-size: 12px; font-weight: 700;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  padding: 7px 18px; border-radius: 8px; border: 1px solid transparent;
+  cursor: pointer; background: transparent; transition: all 0.16s ease;
+}
+.vbtn-tail { border-color: rgba(0,212,138,.35); color: var(--green); }
+.vbtn-tail:hover { background: rgba(0,212,138,.1); }
+.vbtn-tail.active { background: var(--green); border-color: var(--green); color: #080809; box-shadow: 0 0 18px rgba(0,212,138,.35); }
+.vbtn-fade { border-color: rgba(255,79,79,.35); color: var(--red); }
+.vbtn-fade:hover { background: rgba(255,79,79,.1); }
+.vbtn-fade.active { background: var(--red); border-color: var(--red); color: #fff; box-shadow: 0 0 18px rgba(255,79,79,.35); }
+
+.vote-progress { flex: 1; display: flex; flex-direction: column; gap: 5px; }
+.vote-track { height: 4px; border-radius: 999px; background: rgba(255,79,79,.18); overflow: hidden; }
+.vote-fill  { height: 100%; border-radius: 999px; background: var(--green); transition: width 0.5s cubic-bezier(0.34,1.56,0.64,1); }
+.vote-counts { display: flex; justify-content: space-between; font-size: 11px; font-variant-numeric: tabular-nums; }
+.vc-tail { color: var(--green); font-weight: 600; }
+.vc-fade { color: var(--red);   font-weight: 600; }
+
+/* ── PAST TABLE ── */
+.past-wrap { background: var(--bg2); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; }
+.past-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.past-table thead tr { border-bottom: 1px solid var(--border2); }
+.past-table th {
+  font-size: 9px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--text3); padding: 12px 16px; text-align: left;
+}
+.past-table th.right { text-align: right; }
+.past-table tbody tr { border-bottom: 1px solid var(--border); transition: background .12s; }
+.past-table tbody tr:last-child { border-bottom: none; }
+.past-table tbody tr:hover { background: var(--bg3); }
+.past-table td { padding: 12px 16px; color: var(--text2); vertical-align: middle; }
+.past-table td.mono { font-family: 'Space Mono', monospace; font-size: 12px; }
+.past-table td.bold { color: var(--text); font-weight: 500; }
+.past-table td.right { text-align: right; }
+.past-table td.acc   { color: var(--accent); font-family: 'Space Mono', monospace; font-size: 12px; font-weight: 700; }
+.past-table td.pl-g  { color: var(--green); font-family: 'Space Mono', monospace; font-weight: 700; font-size: 12px; text-align: right; }
+.past-table td.pl-r  { color: var(--red);   font-family: 'Space Mono', monospace; font-weight: 700; font-size: 12px; text-align: right; }
+.past-table td.pl-n  { color: var(--text3); font-family: 'Space Mono', monospace; font-size: 12px; text-align: right; }
+
+.mini-badge {
+  font-size: 10px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+  padding: 3px 10px; border-radius: 5px; border: 1px solid transparent; display: inline-block;
+}
+.mb-win  { background: var(--green-dim); color: var(--green); border-color: rgba(0,212,138,.2); }
+.mb-loss { background: var(--red-dim);   color: var(--red);   border-color: rgba(255,79,79,.2); }
+.mb-push { background: rgba(85,85,95,.15); color: var(--push); border-color: rgba(85,85,95,.25); }
+.mb-pend { background: var(--amber-dim); color: var(--amber); border-color: rgba(255,176,32,.2); }
+
+.empty-state { text-align: center; padding: 2.5rem 1rem; color: var(--text3); font-size: 13px; }
+
+footer {
+  text-align: center; padding: 2rem 1rem 3rem;
+  font-size: 11px; color: var(--text3); letter-spacing: 0.06em;
+  border-top: 1px solid var(--border); position: relative; z-index: 1;
+}
+
+@media (max-width: 600px) {
+  .card-body { grid-template-columns: 1fr; }
+  .card-right { flex-direction: row; align-items: center; justify-content: space-between; }
+  .matchup { font-size: 14px; }
+  .vote-bar { flex-wrap: wrap; }
+  .stat-val { font-size: 18px; }
+  .past-table th:nth-child(4), .past-table td:nth-child(4) { display: none; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="logo">
+      <div class="logo-mark">
+        <svg viewBox="0 0 18 18" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M2 14L9 3l7 11"/><path d="M5 10h8"/>
+        </svg>
+      </div>
+      <div class="logo-wordmark">
+        <div class="logo-top">ARB<span>TRACKER</span></div>
+        <div class="logo-bot">Daily Picks</div>
+      </div>
+    </div>
+    <div class="header-right">
+      <div class="live-pill">
+        <div class="live-dot"></div>
+        <span class="live-text">Live</span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="stat-bar">
+  <div class="stat-bar-inner">
+    <div class="stat-cell">
+      <div class="stat-lbl">All-Time Record</div>
+      <div class="stat-val" id="s-record">—</div>
+    </div>
+    <div class="stat-cell">
+      <div class="stat-lbl">Win %</div>
+      <div class="stat-val" id="s-winpct">—</div>
+    </div>
+    <div class="stat-cell">
+      <div class="stat-lbl">Total P/L</div>
+      <div class="stat-val" id="s-pl">—</div>
+    </div>
+    <div class="stat-cell">
+      <div class="stat-lbl">Today's P/L</div>
+      <div class="stat-val cy" id="s-today">—</div>
+    </div>
+  </div>
+</div>
+
+<div class="page-layout">
+
+  <main class="main">
+
+  <!-- TODAY -->
+  <div>
+    <div class="section-head">
+      <span class="section-lbl">Today's Slate</span>
+      <div class="section-rule"></div>
+      <span class="section-date">Jun 4, 2026</span>
+    </div>
+    <div class="picks" id="today-list"></div>
+  </div>
+
+  <!-- PAST -->
+  <div>
+    <div class="section-head">
+      <span class="section-lbl">Past Picks</span>
+      <div class="section-rule"></div>
+      <span class="section-ct" id="past-count"></span>
+    </div>
+    <div id="past-list"></div>
+  </div>
+
+  </main>
+
+<!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-card">
+      <div class="sidebar-card-head">All-Time Stats</div>
+      <div class="sidebar-stat">
+        <span class="sidebar-stat-lbl">Record</span>
+        <span class="sidebar-stat-val" id="sb-record">—</span>
+      </div>
+      <div class="sidebar-stat">
+        <span class="sidebar-stat-lbl">Win %</span>
+        <span class="sidebar-stat-val" id="sb-winpct">—</span>
+      </div>
+      <div class="sidebar-stat">
+        <span class="sidebar-stat-lbl">Total P/L</span>
+        <span class="sidebar-stat-val" id="sb-pl">—</span>
+      </div>
+      <div class="sidebar-stat">
+        <span class="sidebar-stat-lbl">ROI</span>
+        <span class="sidebar-stat-val" id="sb-roi">—</span>
+      </div>
+      <div class="sidebar-stat">
+        <span class="sidebar-stat-lbl">Avg P/L/day</span>
+        <span class="sidebar-stat-val" id="sb-avgday">—</span>
+      </div>
+      <div class="sidebar-stat">
+        <span class="sidebar-stat-lbl">Total wagered</span>
+        <span class="sidebar-stat-val cy" id="sb-wagered">—</span>
+      </div>
+    </div>
+
+    <div class="sidebar-card">
+      <div class="sidebar-card-head">Recent Form</div>
+      <div style="font-size:9px;color:var(--text3);padding:5px 11px 0;letter-spacing:0.06em;">Daily P/L · hover for details</div>
+      <div class="streak-dots" id="sb-streak"></div>
+    </div>
+
+    <div class="sidebar-card">
+      <div class="sidebar-card-head">Best &amp; Worst</div>
+      <div class="best-day-row">
+        <div class="best-day-lbl">Best day</div>
+        <div class="best-day-val g" id="sb-best">—</div>
+      </div>
+      <div class="best-day-row">
+        <div class="best-day-lbl">Worst day</div>
+        <div class="best-day-val r" id="sb-worst">—</div>
+      </div>
+
+    </div>
+
+    <div class="sidebar-card">
+      <div class="sidebar-card-head">Top Players</div>
+      <div class="best-day-row">
+        <div class="best-day-lbl">Most $ won</div>
+        <div class="best-day-val g" id="sb-top-winner">—</div>
+      </div>
+      <div class="best-day-row">
+        <div class="best-day-lbl">Most $ lost</div>
+        <div class="best-day-val r" id="sb-top-loser">—</div>
+      </div>
+    </div>
+  </aside>
+
+</div>
+
+<footer>For entertainment purposes only &nbsp;·&nbsp; Please gamble responsibly</footer>
+
+<script>
+
+// ════════════════════════════════════════════════
+//  TODAY'S PICKS  —  Jun 4, 2026
+// ════════════════════════════════════════════════
+const TODAY_PICKS = [
+  {
+    id: "2026-06-04-t1",
+    matchup: "Hussey ML",
+    pick: "Hussey ML",
+    line: "-160",
+    winPct: "",
+    time: "Fanatics",
+    bet: "$10.00",
+    result: "pending",
+    pl: null
+  },
+  {
+    id: "2026-06-04-t2",
+    matchup: "Henning ML",
+    pick: "Henning ML",
+    line: "-280",
+    winPct: "",
+    time: "Fanatics",
+    bet: "$10.00",
+    result: "win",
+    pl: "+$3.57"
+  },
+  {
+    id: "2026-06-04-t3",
+    matchup: "Henning -1.5 sets",
+    pick: "Henning -1.5 sets",
+    line: "-115",
+    winPct: "",
+    time: "Fanatics",
+    bet: "$10.00",
+    result: "win",
+    pl: "+$8.70"
+  },
+  {
+    id: "2026-06-04-t4",
+    matchup: "Shimabukuro ML",
+    pick: "Shimabukuro ML",
+    line: "-125",
+    winPct: "",
+    time: "Fanatics",
+    bet: "$10.00",
+    result: "win",
+    pl: "+$8.00"
+  },
+  {
+    id: "2026-06-04-t5",
+    matchup: "Choinski ML",
+    pick: "Choinski ML",
+    line: "-175",
+    winPct: "",
+    time: "Fanatics",
+    bet: "$10.00",
+    result: "loss",
+    pl: "-$10.00"
+  },
+  {
+    id: "2026-06-04-t6",
+    matchup: "Harris ML",
+    pick: "Harris ML",
+    line: "+110",
+    winPct: "",
+    time: "Fanatics",
+    bet: "$10.00",
+    result: "pending",
+    pl: null
+  },
+  {
+    id: "2026-06-04-t7",
+    matchup: "Harris +1.5 sets",
+    pick: "Harris +1.5 sets",
+    line: "-250",
+    winPct: "",
+    time: "Fanatics",
+    bet: "$10.00",
+    result: "pending",
+    pl: null
+  },
+  {
+    id: "2026-06-04-t8",
+    matchup: "McDonald ML",
+    pick: "McDonald ML",
+    line: "+125",
+    winPct: "",
+    time: "Fanatics",
+    bet: "$10.00",
+    result: "pending",
+    pl: null
+  },
+  {
+    id: "2026-06-04-t9",
+    matchup: "Shnaider ML",
+    pick: "Shnaider ML",
+    line: "-180",
+    winPct: "",
+    time: "Fanatics",
+    bet: "$10.00",
+    result: "pending",
+    pl: null
+  },
+  {
+    id: "2026-06-04-t10",
+    matchup: "Andreeva +1.5 sets",
+    pick: "Andreeva +1.5 sets",
+    line: "-225",
+    winPct: "",
+    time: "Fanatics",
+    bet: "$10.00",
+    result: "pending",
+    pl: null
+  },
+  {
+    id: "2026-06-04-t11",
+    matchup: "Andreeva ML",
+    pick: "Andreeva ML",
+    line: "+115",
+    winPct: "",
+    time: "Fanatics",
+    bet: "$10.00",
+    result: "pending",
+    pl: null
+  }
+];
+
+// ════════════════════════════════════════════════
+//  PAST PICKS  —  add previous days here (newest first)
+// ════════════════════════════════════════════════
+const PLAYER_LEDGER = {
+  "Tommy Paul":    { w:3, l:0, p:0, pl:121.94, wagered:164.0 },
+  "Faria":         { w:4, l:0, p:0, pl:118.23, wagered:175.08 },
+  "Mensik":        { w:5, l:0, p:0, pl:62.79, wagered:103.31 },
+  "Bar Biryukov":  { w:1, l:0, p:0, pl:60.00, wagered:50.0 },
+  "Cobolli":       { w:6, l:2, p:0, pl:48.39, wagered:360.19 },
+  "Shnaider":      { w:3, l:0, p:0, pl:36.91, wagered:30.0 },
+  "Basavareddy":   { w:1, l:1, p:0, pl:33.41, wagered:52.5 },
+  "Tiafoe":        { w:3, l:2, p:0, pl:30.83, wagered:120.0 },
+  "Fonseca":       { w:3, l:2, p:0, pl:29.40, wagered:65.0 },
+  "Vallejo":       { w:2, l:0, p:0, pl:28.13, wagered:35.0 },
+  "Buse":          { w:1, l:1, p:0, pl:26.90, wagered:45.0 },
+  "Ruud":          { w:4, l:1, p:0, pl:24.86, wagered:159.9 },
+  "Rinderknecht":  { w:1, l:0, p:0, pl:24.56, wagered:70.0 },
+  "Kouame":        { w:2, l:0, p:0, pl:24.00, wagered:25.0 },
+  "Duckworth":     { w:1, l:0, p:0, pl:21.75, wagered:15.0 },
+  "Munar":         { w:1, l:0, p:0, pl:20.00, wagered:55.0 },
+  "Shelton":       { w:1, l:0, p:0, pl:19.11, wagered:60.0 },
+  "Bergs":         { w:1, l:0, p:0, pl:17.50, wagered:35.0 },
+  "Berrettini":    { w:1, l:0, p:1, pl:12.90, wagered:45.0 },
+  "Khachanov":     { w:1, l:0, p:0, pl:10.00, wagered:20.0 },
+  "Wawrinka":      { w:1, l:0, p:0, pl:10.00, wagered:20.0 },
+  "Andreeva":      { w:1, l:0, p:0, pl:9.52, wagered:20.0 },
+  "Diaz Acosta":   { w:1, l:0, p:0, pl:8.82, wagered:15.0 },
+  "De Jong":       { w:1, l:0, p:0, pl:8.82, wagered:15.0 },
+  "Machac":        { w:1, l:0, p:0, pl:8.82, wagered:15.0 },
+  "Chwalinska":    { w:1, l:0, p:0, pl:7.14, wagered:10.0 },
+  "Reis Da Silva": { w:1, l:0, p:0, pl:6.90, wagered:10.0 },
+  "Collignon":     { w:1, l:1, p:0, pl:6.50, wagered:20.0 },
+  "Oliynykova":    { w:2, l:1, p:0, pl:6.11, wagered:46.0 },
+  "Carreno Busta": { w:1, l:0, p:1, pl:5.88, wagered:25.0 },
+  "Celine Naef":   { w:1, l:0, p:0, pl:5.56, wagered:10.0 },
+  "Vukic Under":   { w:1, l:0, p:0, pl:5.96, wagered:8.35 },
+  "JM Cerundolo":  { w:1, l:0, p:0, pl:5.00, wagered:10.0 },
+  "Lazaro Garcia": { w:1, l:0, p:0, pl:4.44, wagered:10.0 },
+  "Svitolina":     { w:2, l:1, p:0, pl:2.88, wagered:35.0 },
+  "VdZ":           { w:0, l:0, p:1, pl:0.00, wagered:20.0 },
+  "Borges":        { w:1, l:1, p:0, pl:-4.50, wagered:22.5 },
+  "Wang Xiyu":     { w:0, l:1, p:0, pl:-5.00, wagered:5.0 },
+  "Fruhvirtova":   { w:0, l:1, p:0, pl:-5.00, wagered:5.0 },
+  "Altmaier":      { w:0, l:1, p:0, pl:-5.00, wagered:5.0 },
+  "Navone":        { w:1, l:1, p:0, pl:-8.80, wagered:120.23 },
+  "Etcheverry":    { w:1, l:1, p:0, pl:-9.55, wagered:61.54 },
+  "Blanchet":      { w:0, l:1, p:0, pl:-10.00, wagered:10.0 },
+  "O'Connell":     { w:0, l:1, p:0, pl:-10.00, wagered:10.0 },
+  "Riedi":         { w:0, l:1, p:0, pl:-10.00, wagered:10.0 },
+  "Jorda Sanchis": { w:0, l:1, p:0, pl:-10.00, wagered:10.0 },
+  "Potapova":      { w:0, l:1, p:0, pl:-10.00, wagered:10.0 },
+  "Jovic":         { w:0, l:1, p:0, pl:-10.00, wagered:10.0 },
+  "Kopriva":       { w:0, l:1, p:0, pl:-10.00, wagered:10.0 },
+  "Burruchaga":    { w:0, l:1, p:0, pl:-10.00, wagered:10.0 },
+  "Griekspoor":    { w:0, l:1, p:0, pl:-10.00, wagered:10.0 },
+  "Marozsan":      { w:0, l:1, p:0, pl:-10.00, wagered:10.0 },
+  "Ivashka":       { w:0, l:1, p:0, pl:-10.24, wagered:10.24 },
+  "Garin":         { w:0, l:1, p:0, pl:-15.00, wagered:15.0 },
+  "Urhobo":        { w:0, l:1, p:0, pl:-15.00, wagered:15.0 },
+  "Dellien":       { w:0, l:1, p:0, pl:-15.00, wagered:15.0 },
+  "Tirante":       { w:1, l:1, p:0, pl:-15.32, wagered:40.0 },
+  "Jodar":         { w:1, l:1, p:0, pl:-18.33, wagered:35.0 },
+  "Darderi":       { w:1, l:1, p:0, pl:-19.43, wagered:43.0 },
+  "Cretu":         { w:0, l:2, p:0, pl:-20.00, wagered:20.0 },
+  "Sierra":        { w:0, l:2, p:0, pl:-20.00, wagered:20.0 },
+  "Starodubtseva": { w:0, l:1, p:0, pl:-20.00, wagered:20.0 },
+  "Zverev":        { w:0, l:1, p:0, pl:-20.00, wagered:20.0 },
+  "Mboko":         { w:0, l:1, p:0, pl:-20.00, wagered:20.0 },
+  "Bublik":        { w:0, l:1, p:0, pl:-20.00, wagered:20.0 },
+  "Lys":           { w:0, l:1, p:0, pl:-20.00, wagered:20.0 },
+  "Goffin":        { w:0, l:1, p:0, pl:-29.58, wagered:29.58 },
+  "Fritz":         { w:0, l:1, p:0, pl:-29.88, wagered:29.88 },
+  "Kalinskaya":    { w:0, l:3, p:0, pl:-30.00, wagered:30.0 },
+  "Baez":          { w:0, l:1, p:0, pl:-31.50, wagered:31.5 },
+  "Muller":        { w:0, l:1, p:0, pl:-33.25, wagered:33.25 },
+  "Coppejans":     { w:0, l:1, p:0, pl:-36.00, wagered:36.0 },
+  "Cerundolo":     { w:2, l:2, p:1, pl:-36.94, wagered:230.19 },
+  "Cecchinato":    { w:0, l:1, p:0, pl:-45.00, wagered:45.0 },
+  "Tabilo":        { w:2, l:4, p:0, pl:-45.42, wagered:136.75 },
+  "Gojo":          { w:0, l:1, p:0, pl:-50.00, wagered:50.0 },
+  "Humbert":       { w:0, l:1, p:0, pl:-50.00, wagered:50.0 },
+  "Rinderknech":   { w:0, l:2, p:0, pl:-55.00, wagered:55.0 },
+  "Swiatek":       { w:0, l:3, p:0, pl:-266.00, wagered:266.0 },
+};
+
+
+// ════════════════════════════════════════════════
+//  ENGINE
+// ════════════════════════════════════════════════
+
+// ⚡ SUPABASE CONFIG — replace with your keys after setup
+const SUPABASE_URL = 'https://wxaheargnhcdwqmrvkvu.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_QmglHPmi1k6nefydbX1yhw_NeY4_dqo';
+
+const sbHeaders = {
+  'Content-Type': 'application/json',
+  'apikey': SUPABASE_KEY,
+  'Authorization': 'Bearer ' + SUPABASE_KEY
+};
+
+const stripeMap = { win:'cs-win', loss:'cs-loss', pending:'cs-pend', push:'cs-push' };
+const badgeMap  = { win:'rb-win', loss:'rb-loss', pending:'rb-pend', push:'rb-push' };
+const miniMap   = { win:'mb-win', loss:'mb-loss', push:'mb-push', pending:'mb-pend' };
+
+function getMyVote(id)       { try { return localStorage.getItem('myv_'+id); } catch(e) { return null; } }
+function setMyVote(id, type) { try { localStorage.setItem('myv_'+id, type); } catch(e) {} }
+
+async function fetchVotes(id) {
+  try {
+    const res  = await fetch(`${SUPABASE_URL}/rest/v1/votes?pick_id=eq.${id}&select=tail,fade`, { headers: sbHeaders });
+    const rows = await res.json();
+    if (rows && rows.length > 0) return { tail: rows[0].tail, fade: rows[0].fade };
+  } catch(e) {}
+  return { tail: 0, fade: 0 };
+}
+
+async function vote(id, type) {
+  const myVote  = getMyVote(id);
+  if (myVote === type) return;
+  const current = await fetchVotes(id);
+  const updates = { pick_id: id, tail: current.tail, fade: current.fade };
+  if (myVote && updates[myVote] > 0) updates[myVote]--;
+  updates[type]++;
+  try {
+    await fetch(`${SUPABASE_URL}/rest/v1/votes`, {
+      method: 'POST',
+      headers: { ...sbHeaders, 'Prefer': 'resolution=merge-duplicates' },
+      body: JSON.stringify(updates)
+    });
+  } catch(e) {}
+  setMyVote(id, type);
+  refreshVoteUI(id, updates.tail, updates.fade);
+}
+
+function refreshVoteUI(id, tail, fade) {
+  const pct    = Math.round(tail / (tail + fade || 1) * 100);
+  const myVote = getMyVote(id);
+  const g = s => document.getElementById(s+'_'+id);
+  if (!g('tb')) return;
+  g('tb').classList.toggle('active', myVote === 'tail');
+  g('fb').classList.toggle('active', myVote === 'fade');
+  g('vf').style.width = pct + '%';
+  g('tc').textContent = tail + ' tailing';
+  g('fc').textContent = fade + ' fading';
+}
+
+async function loadVotes(id) {
+  const { tail, fade } = await fetchVotes(id);
+  refreshVoteUI(id, tail, fade);
+}
+
+function plClass(pl) {
+  if (!pl || pl === '-') return 'pl-nil';
+  return pl.startsWith('+') ? 'pl-pos' : 'pl-neg';
+}
+
+function cardHTML(p) {
+  const myVote    = getMyVote(p.id);
+  const plDisplay = p.pl || '—';
+  return `
+<div class="pick-card" id="card_${p.id}">
+  <div class="card-stripe ${stripeMap[p.result]||'cs-pend'}"></div>
+  <div class="card-body">
+    <div>
+      <div class="matchup">${p.matchup}</div>
+      <div class="card-details">
+        <div class="det">
+          <svg viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round">
+            <path d="M7 1l1.8 3.6L13 5.3l-3 2.9.7 4.1L7 10.4l-3.7 1.9.7-4.1-3-2.9 4.2-.7z"/>
+          </svg>
+          <span class="pick-name">${p.pick}</span>
+        </div>
+        <span class="chip chip-odds">${p.line}</span>
+        <span class="chip chip-winpct">${p.winPct} win</span>
+        <span class="chip chip-bet">${p.bet}</span>
+        <span class="chip chip-time">${p.time}</span>
+      </div>
+    </div>
+    <div class="card-right">
+      <span class="result-badge ${badgeMap[p.result]||'rb-pend'}">${p.result}</span>
+      <span class="pl-val ${plClass(p.pl)}">${plDisplay}</span>
+    </div>
+  </div>
+  <div class="vote-bar">
+    <div class="vote-btns">
+      <button class="vbtn vbtn-tail${myVote==='tail'?' active':''}" id="tb_${p.id}" onclick="vote('${p.id}','tail')">Tail</button>
+      <button class="vbtn vbtn-fade${myVote==='fade'?' active':''}" id="fb_${p.id}" onclick="vote('${p.id}','fade')">Fade</button>
+    </div>
+    <div class="vote-progress">
+      <div class="vote-track"><div class="vote-fill" id="vf_${p.id}" style="width:0%"></div></div>
+      <div class="vote-counts">
+        <span class="vc-tail" id="tc_${p.id}">0 tailing</span>
+        <span class="vc-fade" id="fc_${p.id}">0 fading</span>
+      </div>
+    </div>
+  </div>
+</div>`;
+}
+
+function renderToday() {
+  document.getElementById('today-list').innerHTML = TODAY_PICKS.map(cardHTML).join('');
+  TODAY_PICKS.forEach(p => loadVotes(p.id));
+}
+
+function renderPast() {
+  const container = document.getElementById('past-list');
+  const entries = Object.entries(PLAYER_LEDGER).sort((a,b) => b[1].pl - a[1].pl);
+  const total = entries.length;
+  document.getElementById('past-count').textContent = total + ' player' + (total !== 1 ? 's' : '');
+
+  container.innerHTML = `
+<div class="past-wrap">
+<table class="past-table">
+  <thead><tr>
+    <th>Player</th>
+    <th>W</th>
+    <th>L</th>
+    <th>P</th>
+    <th class="right">Net P/L</th>
+  </tr></thead>
+  <tbody>
+    ${entries.map(([name, s]) => `
+    <tr>
+      <td class="bold">${name}</td>
+      <td class="mono" style="color:var(--green)">${s.w}</td>
+      <td class="mono" style="color:var(--red)">${s.l}</td>
+      <td class="mono" style="color:var(--push)">${s.p}</td>
+      <td class="${s.pl >= 0 ? 'pl-g' : 'pl-r'}">${s.pl >= 0 ? '+' : ''}\$${Math.abs(s.pl).toFixed(2)}</td>
+    </tr>`).join('')}
+  </tbody>
+</table>
+</div>`;
+}
+
+function renderStats() {
+  function parsePL(str) {
+    if (!str) return 0;
+    const n = parseFloat(str.replace(/[^0-9.]/g, ''));
+    return str.includes('-') ? -n : n;
+  }
+
+  // Aggregate from PLAYER_LEDGER
+  let pastWins = 0, pastLosses = 0, pastPL = 0;
+  Object.values(PLAYER_LEDGER).forEach(s => {
+    pastWins   += s.w;
+    pastLosses += s.l;
+    pastPL     += s.pl;
+  });
+
+  // Add today's picks
+  const todayWins   = TODAY_PICKS.filter(p => p.result === 'win').length;
+  const todayLosses = TODAY_PICKS.filter(p => p.result === 'loss').length;
+  const todayPL     = TODAY_PICKS.reduce((sum, p) => sum + parsePL(p.pl), 0);
+
+  const wins    = pastWins + todayWins;
+  const losses  = pastLosses + todayLosses;
+  const settled = wins + losses;
+  const winPct  = settled ? Math.round(wins / settled * 100) : null;
+  const totalPL = pastPL + todayPL;
+
+  const rEl = document.getElementById('s-record');
+  rEl.textContent = `${wins}-${losses}`;
+  rEl.className = 'stat-val' + (wins > losses ? ' g' : losses > wins ? ' r' : '');
+
+  const wEl = document.getElementById('s-winpct');
+  wEl.textContent = winPct !== null ? winPct + '%' : '—';
+  wEl.className = 'stat-val' + (winPct >= 55 ? ' g' : winPct !== null && winPct < 45 ? ' r' : '');
+
+  const pEl = document.getElementById('s-pl');
+  pEl.textContent = (totalPL >= 0 ? '+' : '') + '$' + Math.abs(totalPL).toFixed(2);
+  pEl.className = 'stat-val' + (totalPL > 0 ? ' g' : totalPL < 0 ? ' r' : '');
+
+  const tEl = document.getElementById('s-today');
+  tEl.textContent = (todayPL >= 0 ? '+' : '') + '$' + Math.abs(todayPL).toFixed(2);
+  tEl.className = 'stat-val' + (todayPL > 0 ? ' g' : todayPL < 0 ? ' r' : ' cy');
+}
+
+function renderSidebar() {
+  // Build 'all' from ledger + today for backward compat
+  const LEDGER_AS_PICKS = Object.entries(PLAYER_LEDGER).flatMap(([name, s]) => {
+    const picks = [];
+    for (let i = 0; i < s.w; i++) picks.push({ pick:name, result:'win',  pl:'+$' + (s.pl > 0 ? (s.pl/Math.max(s.w,1)).toFixed(2) : '0'), bet:'$0', date:'Past' });
+    for (let i = 0; i < s.l; i++) picks.push({ pick:name, result:'loss', pl:'-$' + (s.pl < 0 ? (Math.abs(s.pl)/Math.max(s.l,1)).toFixed(2) : '0'), bet:'$0', date:'Past' });
+    for (let i = 0; i < s.p; i++) picks.push({ pick:name, result:'push', pl:null, bet:'$0', date:'Past' });
+    return picks;
+  });
+  const all = [...TODAY_PICKS, ...LEDGER_AS_PICKS];
+
+  function parsePL(str) {
+    if (!str) return 0;
+    const n = parseFloat(str.replace(/[^0-9.]/g, ''));
+    return str.includes('-') ? -n : n;
+  }
+
+  const wins   = all.filter(p => p.result === 'win').length;
+  const losses = all.filter(p => p.result === 'loss').length;
+  const settled = wins + losses;
+  const winPct  = settled ? Math.round(wins / settled * 100) : null;
+  const totalPL = all.reduce((s, p) => s + parsePL(p.pl), 0);
+
+  // Total wagered from ledger + today
+  const pastWagered = Object.values(PLAYER_LEDGER).reduce((s, p) => s + (p.wagered || 0), 0);
+  const todayWagered = TODAY_PICKS.reduce((s, p) => { const n = parseFloat((p.bet||'0').replace(/[^0-9.]/g,'')); return s+(isNaN(n)?0:n); }, 0);
+  const totalW = pastWagered + todayWagered;
+
+  // ROI
+  const roi = totalW ? (totalPL / totalW * 100) : 0;
+
+  // Avg P/L per day
+  const days = [...new Set(all.map(p => p.date || 'Today'))].length;
+  const avgDay = days ? totalPL / days : 0;
+
+  // Set values
+  const set = (id, val, cls) => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.textContent = val;
+    if (cls) el.className = 'sidebar-stat-val ' + cls;
+  };
+
+  set('sb-record',  wins + '-' + losses, wins > losses ? 'g' : losses > wins ? 'r' : '');
+  set('sb-winpct',  winPct !== null ? winPct + '%' : '—', winPct >= 55 ? 'g' : winPct !== null && winPct < 45 ? 'r' : '');
+  set('sb-pl',      (totalPL >= 0 ? '+' : '') + '$' + Math.abs(totalPL).toFixed(2), totalPL > 0 ? 'g' : totalPL < 0 ? 'r' : '');
+  set('sb-roi',     (roi >= 0 ? '+' : '') + roi.toFixed(1) + '%', roi > 0 ? 'g' : roi < 0 ? 'r' : '');
+  set('sb-avgday',  (avgDay >= 0 ? '+' : '') + '$' + Math.abs(avgDay).toFixed(2), avgDay > 0 ? 'g' : avgDay < 0 ? 'r' : '');
+  set('sb-wagered', '$' + totalW.toFixed(2), 'cy');
+
+  // Recent form dots — not available with ledger format
+  const streakEl = document.getElementById('sb-streak');
+  if (streakEl) streakEl.innerHTML = '<div style="font-size:10px;color:var(--text3);padding:2px 0">Tracked in ledger</div>';
+
+  // Best player / worst player
+  const ledgerArr = Object.entries(PLAYER_LEDGER);
+  if (ledgerArr.length) {
+    const best  = ledgerArr.reduce((a,b) => b[1].pl > a[1].pl ? b : a);
+    const worst = ledgerArr.reduce((a,b) => b[1].pl < a[1].pl ? b : a);
+    const bestEl  = document.getElementById('sb-best');
+    const worstEl = document.getElementById('sb-worst');
+    if (bestEl)  bestEl.textContent  = best[0]  + ': +$' + best[1].pl.toFixed(2);
+    if (worstEl) worstEl.textContent = worst[0] + ': -$' + Math.abs(worst[1].pl).toFixed(2);
+  }
+
+
+  // Top players by cumulative P/L
+  const playerPL = {};
+  all.forEach(p => {
+    const raw = (p.pick || p.matchup || '');
+    const name = raw
+      .replace(/ ML$/i, '')
+      .replace(/ [+\-][0-9.]+ sets?$/i, '')
+      .replace(/ [+\-][0-9.]+$/i, '')
+      .trim();
+    if (!name) return;
+    if (!playerPL[name]) playerPL[name] = 0;
+    playerPL[name] += parsePL(p.pl);
+  });
+
+  const plEntries = Object.entries(playerPL);
+  if (plEntries.length) {
+    const topW = plEntries.reduce((a, b) => b[1] > a[1] ? b : a);
+    const topL = plEntries.reduce((a, b) => b[1] < a[1] ? b : a);
+    const wEl2 = document.getElementById('sb-top-winner');
+    const lEl2 = document.getElementById('sb-top-loser');
+    if (wEl2) wEl2.textContent = topW[0] + ': +$' + topW[1].toFixed(2);
+    if (lEl2) lEl2.textContent = topL[0] + ': -$' + Math.abs(topL[1]).toFixed(2);
+  }
+}
+
+renderToday();
+renderPast();
+renderStats();
+renderSidebar();
+</script>
+</body>
+</html>
