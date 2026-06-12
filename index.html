@@ -429,7 +429,7 @@ footer {
     <div class="section-head">
       <span class="section-lbl">Today's Slate</span>
       <div class="section-rule"></div>
-      <span class="section-date">Jun 11, 2026</span>
+      <span class="section-date">Jun 12, 2026</span>
     </div>
     <div class="picks" id="today-list"></div>
   </div>
@@ -519,21 +519,65 @@ footer {
 // ════════════════════════════════════════════════
 const TODAY_PICKS = [
   {
-    id: "2026-06-11-t1",
+    id: "2026-06-12-t1",
     matchup: "Prozorova vs Kraus",
     pick: "Prozorova ML",
     line: "-125",
     winPct: "",
     time: "Fanatics · Carried over",
     bet: "$20.00",
-    result: "pending",
-    pl: null
+    result: "win",
+    pl: "+$16.00"
   },
   {
-    id: "2026-06-11-t2",
+    id: "2026-06-12-t2",
     matchup: "Prozorova vs Kraus",
     pick: "Prozorova -1.5 sets",
     line: "+175",
+    winPct: "",
+    time: "Fanatics · Carried over",
+    bet: "$10.00",
+    result: "win",
+    pl: "+$17.50"
+  },
+  {
+    id: "2026-06-12-t3",
+    matchup: "Vidmanova vs Stefanini",
+    pick: "Vidmanova ML",
+    line: "-145",
+    winPct: "",
+    time: "Fanatics · Carried over",
+    bet: "$10.00",
+    result: "win",
+    pl: "+$6.90"
+  },
+  {
+    id: "2026-06-12-t4",
+    matchup: "Vidmanova vs Stefanini",
+    pick: "Vidmanova -1.5 sets",
+    line: "+165",
+    winPct: "",
+    time: "Fanatics · Carried over",
+    bet: "$10.00",
+    result: "win",
+    pl: "+$16.50"
+  },
+  {
+    id: "2026-06-12-t5",
+    matchup: "Vidmanova vs Stefanini",
+    pick: "Vidmanova +1.5 sets",
+    line: "-345",
+    winPct: "",
+    time: "Fanatics · Carried over",
+    bet: "$10.00",
+    result: "win",
+    pl: "+$2.90"
+  },
+  {
+    id: "2026-06-12-t6",
+    matchup: "Schoolkate vs Tarvet",
+    pick: "Tarvet ML",
+    line: "+115",
     winPct: "",
     time: "Fanatics · Carried over",
     bet: "$10.00",
@@ -541,48 +585,37 @@ const TODAY_PICKS = [
     pl: null
   },
   {
-    id: "2026-06-11-t3",
-    matchup: "Humbert vs Bonzi",
-    pick: "Bonzi ML",
-    line: "+185",
+    id: "2026-06-12-t7",
+    matchup: "Shelton vs Giron",
+    pick: "Shelton ML",
+    line: "-280",
+    winPct: "",
+    time: "Fanatics · Carried over",
+    bet: "$10.00",
+    result: "win",
+    pl: "+$3.57"
+  },
+  {
+    id: "2026-06-12-t8",
+    matchup: "Perricard vs Bublik",
+    pick: "Bublik ML",
+    line: "-190",
     winPct: "",
     time: "Fanatics",
     bet: "$10.00",
-    result: "pending",
-    pl: null
+    result: "win",
+    pl: "+$5.26"
   },
   {
-    id: "2026-06-11-t4",
-    matchup: "Humbert vs Bonzi",
-    pick: "Bonzi +1.5 sets",
-    line: "-150",
-    winPct: "",
-    time: "Fanatics",
-    bet: "$10.00",
-    result: "pending",
-    pl: null
-  },
-  {
-    id: "2026-06-11-t5",
-    matchup: "Montgomery vs Minnen",
-    pick: "Minnen ML",
+    id: "2026-06-12-t9",
+    matchup: "Zhang vs Mannarino",
+    pick: "Mannarino ML",
     line: "-160",
     winPct: "",
     time: "Fanatics",
     bet: "$10.00",
-    result: "pending",
-    pl: null
-  },
-  {
-    id: "2026-06-11-t6",
-    matchup: "Shevchenko vs Barton",
-    pick: "Shevchenko +1.5 sets",
-    line: "-260",
-    winPct: "",
-    time: "Fanatics",
-    bet: "$10.00",
-    result: "pending",
-    pl: null
+    result: "win",
+    pl: "+$6.25"
   }
 ];
 
@@ -606,7 +639,7 @@ const PLAYER_LEDGER = {
   "Kouame":        { w:2, l:0, p:0, pl:24.00, wagered:25.0 },
   "Duckworth":     { w:1, l:0, p:0, pl:21.75, wagered:15.0 },
   "Munar":         { w:1, l:0, p:0, pl:20.00, wagered:55.0 },
-  "Shelton":       { w:1, l:0, p:0, pl:19.11, wagered:60.0 },
+  "Shelton":       { w:1, l:1, p:0, pl:9.11,  wagered:70.0 },
   "Bergs":         { w:1, l:2, p:0, pl:-2.50, wagered:55.0 },
   "Berrettini":    { w:1, l:0, p:1, pl:12.90, wagered:45.0 },
   "Khachanov":     { w:1, l:0, p:0, pl:10.00, wagered:20.0 },
@@ -698,6 +731,9 @@ const PLAYER_LEDGER = {
   "Sachko":              { w:1, l:0, p:0, pl:16.50,  wagered:10.0 },
   "Martincova":          { w:0, l:1, p:0, pl:-10.00, wagered:10.0 },
   "Fearnley":            { w:1, l:0, p:0, pl:4.00,   wagered:10.0 },
+  "Bonzi":               { w:2, l:0, p:0, pl:25.17,  wagered:20.0 },
+  "Minnen":              { w:0, l:1, p:0, pl:-10.00, wagered:10.0 },
+  "Shevchenko":          { w:1, l:0, p:0, pl:3.85,   wagered:10.0 },
 };
 
 
