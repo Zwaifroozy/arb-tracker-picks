@@ -429,7 +429,7 @@ footer {
     <div class="section-head">
       <span class="section-lbl">Today's Slate</span>
       <div class="section-rule"></div>
-      <span class="section-date">Jun 23, 2026</span>
+      <span class="section-date">Jun 24, 2026</span>
     </div>
     <div class="picks" id="today-list"></div>
   </div>
@@ -519,10 +519,10 @@ footer {
 // ════════════════════════════════════════════════
 const TODAY_PICKS = [
   {
-    id: "2026-06-23-t1",
-    matchup: "Korneeva vs Shubladze",
-    pick: "Korneeva ML",
-    line: "-210",
+    id: "2026-06-24-t1",
+    matchup: "McDonald vs Carballes Baena",
+    pick: "McDonald -1.5 (spread)",
+    line: "+110",
     winPct: "",
     time: "Fanatics",
     bet: "$10.00",
@@ -530,10 +530,10 @@ const TODAY_PICKS = [
     pl: null
   },
   {
-    id: "2026-06-23-t2",
-    matchup: "Minnen vs Ferro",
-    pick: "Minnen ML",
-    line: "-425",
+    id: "2026-06-24-t2",
+    matchup: "McDonald vs Carballes Baena",
+    pick: "McDonald ML",
+    line: "-230",
     winPct: "",
     time: "Fanatics",
     bet: "$10.00",
@@ -541,10 +541,10 @@ const TODAY_PICKS = [
     pl: null
   },
   {
-    id: "2026-06-23-t3",
-    matchup: "Minnen vs Ferro",
-    pick: "Minnen -1.5 (spread)",
-    line: "-160",
+    id: "2026-06-24-t3",
+    matchup: "Jubb vs Barrios Vera",
+    pick: "Jubb ML",
+    line: "+110",
     winPct: "",
     time: "Fanatics",
     bet: "$10.00",
@@ -552,10 +552,54 @@ const TODAY_PICKS = [
     pl: null
   },
   {
-    id: "2026-06-23-t4",
-    matchup: "Naef vs Garland",
-    pick: "Naef ML",
-    line: "-285",
+    id: "2026-06-24-t4",
+    matchup: "Mejia vs Gustavo Heide",
+    pick: "Mejia ML",
+    line: "+135",
+    winPct: "",
+    time: "Fanatics",
+    bet: "$10.00",
+    result: "win",
+    pl: "+$13.50"
+  },
+  {
+    id: "2026-06-24-t5",
+    matchup: "Tarvet vs Galarneau",
+    pick: "Tarvet ML",
+    line: "-220",
+    winPct: "",
+    time: "Fanatics",
+    bet: "$10.00",
+    result: "win",
+    pl: "+$4.55"
+  },
+  {
+    id: "2026-06-24-t6",
+    matchup: "Fery vs Cerundolo",
+    pick: "Under 22.5 games",
+    line: "-140",
+    winPct: "",
+    time: "Fanatics",
+    bet: "$10.00",
+    result: "win",
+    pl: "+$7.14"
+  },
+  {
+    id: "2026-06-24-t7",
+    matchup: "Fery vs Cerundolo",
+    pick: "Fery -1.5 (spread)",
+    line: "+100",
+    winPct: "",
+    time: "Fanatics",
+    bet: "$10.00",
+    result: "loss",
+    pl: "-$10.00"
+  },
+  {
+    id: "2026-06-24-t8",
+    matchup: "Safiullin vs Coppejans",
+    pick: "Safiullin -1.5 (spread)",
+    line: "-170",
     winPct: "",
     time: "Fanatics",
     bet: "$10.00",
@@ -563,59 +607,15 @@ const TODAY_PICKS = [
     pl: null
   },
   {
-    id: "2026-06-23-t5",
-    matchup: "Naef vs Garland",
-    pick: "Naef -1.5 (spread)",
-    line: "-115",
+    id: "2026-06-24-t9",
+    matchup: "Yunchaokete vs Tabur",
+    pick: "Yunchaokete -1.5 (spread)",
+    line: "-150",
     winPct: "",
     time: "Fanatics",
     bet: "$10.00",
-    result: "pending",
-    pl: null
-  },
-  {
-    id: "2026-06-23-t6",
-    matchup: "Tan vs Pohankova",
-    pick: "Pohankova ML",
-    line: "-160",
-    winPct: "",
-    time: "Fanatics",
-    bet: "$10.00",
-    result: "pending",
-    pl: null
-  },
-  {
-    id: "2026-06-23-t7",
-    matchup: "Mandlik vs Charaeva",
-    pick: "Charaeva ML",
-    line: "-155",
-    winPct: "",
-    time: "Fanatics",
-    bet: "$10.00",
-    result: "pending",
-    pl: null
-  },
-  {
-    id: "2026-06-23-t8",
-    matchup: "Miyazaki vs Yaneva",
-    pick: "Yaneva ML",
-    line: "-225",
-    winPct: "",
-    time: "Fanatics",
-    bet: "$10.00",
-    result: "pending",
-    pl: null
-  },
-  {
-    id: "2026-06-23-t9",
-    matchup: "Osaka vs Mertens (WTA Bad Homburg)",
-    pick: "Osaka ML",
-    line: "-125",
-    winPct: "",
-    time: "Fanatics",
-    bet: "$10.00",
-    result: "pending",
-    pl: null
+    result: "loss",
+    pl: "-$10.00"
   }
 ];
 
@@ -635,6 +635,12 @@ const PLAYER_LEDGER = {
   "Travaglia":           { w:1, l:0, p:0, pl:5.56,   wagered:10.0 },
   "Cecchinato/Barrios Vera U20.5": { w:0, l:1, p:0, pl:-10.00, wagered:10.0 },
   "Budkov Kjaer/Reis Da Silva U20.5": { w:0, l:1, p:0, pl:-10.00, wagered:10.0 },
+  "Charaeva":            { w:1, l:0, p:0, pl:6.45,   wagered:10.0 },
+  "Yaneva":              { w:1, l:0, p:0, pl:4.44,   wagered:10.0 },
+  "Osaka":               { w:1, l:0, p:0, pl:8.00,   wagered:10.0 },
+  "Naef":                { w:0, l:2, p:0, pl:-20.00, wagered:20.0 },
+  "Pohankova":           { w:0, l:1, p:0, pl:-10.00, wagered:10.0 },
+  "Korneeva":            { w:1, l:0, p:0, pl:4.76,   wagered:10.0 },
   "Tommy Paul":    { w:3, l:0, p:0, pl:121.94, wagered:164.0 },
   "Faria":         { w:4, l:0, p:0, pl:118.23, wagered:175.08 },
   "Mensik":        { w:6, l:1, p:0, pl:61.49, wagered:133.31 },
@@ -749,7 +755,7 @@ const PLAYER_LEDGER = {
   "Martincova":          { w:0, l:1, p:0, pl:-10.00, wagered:10.0 },
   "Fearnley":            { w:1, l:0, p:0, pl:4.00,   wagered:10.0 },
   "Bonzi":               { w:2, l:0, p:0, pl:25.17,  wagered:20.0 },
-  "Minnen":              { w:0, l:1, p:0, pl:-10.00, wagered:10.0 },
+  "Minnen":              { w:2, l:1, p:0, pl:-1.40, wagered:30.0 },
   "Shevchenko":          { w:2, l:0, p:0, pl:10.75,  wagered:20.0 },
   "Basilashvili":        { w:1, l:0, p:0, pl:7.14,   wagered:10.0 },
   "Kovacevic":           { w:1, l:0, p:0, pl:5.71,   wagered:10.0 },
